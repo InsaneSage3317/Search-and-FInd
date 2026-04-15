@@ -20,7 +20,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         // Validate NIT Silchar email domain
         if (!NITS_EMAIL_REGEX.test(email)) {
-          throw new Error("Only NIT Silchar institute emails are allowed");
+          return null;
         }
 
         // TODO: Replace with Prisma DB lookup once Supabase is connected

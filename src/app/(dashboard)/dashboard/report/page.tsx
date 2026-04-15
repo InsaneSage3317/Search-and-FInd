@@ -42,7 +42,9 @@ function ReportPageContent() {
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
-    getZones().then(setZones);
+    getZones()
+      .then(setZones)
+      .catch(() => toast.error("Failed to load campus zones"));
   }, []);
 
   async function handleSubmit(formData: FormData) {

@@ -1,6 +1,7 @@
 import { getItems } from "@/app/actions/items";
 import { getZones } from "@/app/actions/zones";
 import { SearchPageClient } from "./search-client";
+import { PackageSearch } from "lucide-react";
 
 export default async function SearchPage() {
   try {

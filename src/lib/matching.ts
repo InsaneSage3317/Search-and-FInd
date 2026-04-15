@@ -8,7 +8,7 @@ import Fuse from "fuse.js";
  *   - Zone Proximity:             25% weight — same zone = full score, different = 0
  *   - Temporal Validity:          15% weight — found AFTER lost = full score, decays over 14 days
  * 
- * Only LOST↔FOUND pairs are matched. A match score ≥ 0.70 triggers a notification.
+ * Only LOST↔FOUND pairs are matched. A match score ≥ 0.55 triggers a notification.
  */
 
 export type MatchableItem = {

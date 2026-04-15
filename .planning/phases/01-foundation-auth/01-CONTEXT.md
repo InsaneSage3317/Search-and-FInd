@@ -37,9 +37,9 @@ This phase establishes the technical foundation for the Smart Lost & Found syste
 **Downstream agents MUST read these before planning or implementing.**
 
 ### Project Planning
-- [.planning/PROJECT.md](file:///d:/Projects/Hackathon/Search%20and%20Find/.planning/PROJECT.md) — Core vision and boundaries.
-- [.planning/REQUIREMENTS.md](file:///d:/Projects/Hackathon/Search%20and%20Find/.planning/REQUIREMENTS.md) — Acceptance criteria for AUTH and REPT.
-- [.planning/research/STACK.md](file:///d:/Projects/Hackathon/Search%20and%20Find/.planning/research/STACK.md) — Domain research for matching and search.
+- [.planning/PROJECT.md](.planning/PROJECT.md) — Core vision and boundaries.
+- [.planning/REQUIREMENTS.md](.planning/REQUIREMENTS.md) — Acceptance criteria for AUTH and REPT.
+- [.planning/research/STACK.md](.planning/research/STACK.md) — Domain research for matching and search.
 
 ### External Documentation
 - [Auth.js Documentation](https://authjs.dev/) — For email provider and domain restriction patterns.
