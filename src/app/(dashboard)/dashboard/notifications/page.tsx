@@ -23,119 +23,134 @@ function ScoreBadge({ score }: { score: number }) {
 }
 
 export default async function NotificationsPage() {
-  const matches = await getMyMatches();
+  try {
+    const matches = await getMyMatches();
 
-  return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-            <Sparkles className="h-6 w-6 text-emerald-400" />
-            Smart Matches
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Our matching engine automatically finds potential matches for your items.
-          </p>
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
+              <Sparkles className="h-6 w-6 text-emerald-400" />
+              Smart Matches
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              Our matching engine automatically finds potential matches for your items.
+            </p>
+          </div>
+          {matches.length > 0 && (
+            <span className="flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-semibold text-emerald-400 ring-1 ring-emerald-500/20">
+              <Bell className="h-3 w-3" />
+              {matches.length} match{matches.length !== 1 ? "es" : ""}
+            </span>
+          )}
         </div>
-        {matches.length > 0 && (
-          <span className="flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-semibold text-emerald-400 ring-1 ring-emerald-500/20">
-            <Bell className="h-3 w-3" />
-            {matches.length} match{matches.length !== 1 ? "es" : ""}
+
+        {/* Score Legend */}
+        <div className="flex gap-4 text-xs text-muted-foreground">
+          <span className="flex items-center gap-1">
+            <Zap className="h-3 w-3 text-emerald-400" /> Text similarity (60%)
           </span>
+          <span className="flex items-center gap-1">
+            <MapPin className="h-3 w-3 text-amber-400" /> Zone match (25%)
+          </span>
+          <span className="flex items-center gap-1">
+            <Clock className="h-3 w-3 text-blue-400" /> Time proximity (15%)
+          </span>
+        </div>
+
+        {matches.length === 0 ? (
+          <Card className="border-dashed border-border/60 bg-transparent">
+            <CardContent className="flex flex-col items-center justify-center py-16">
+              <div className="rounded-full bg-muted p-4 mb-4">
+                <Sparkles className="h-8 w-8 text-muted-foreground" />
+              </div>
+              <h3 className="text-lg font-semibold">No matches yet</h3>
+              <p className="text-sm text-muted-foreground mt-1 max-w-sm text-center">
+                When you report items, our engine will automatically scan for potential matches.
+                Report an item to get started!
+              </p>
+              <Button className="mt-4 bg-emerald-600 hover:bg-emerald-500 text-white" asChild>
+                <Link href="/dashboard/report">Report an Item</Link>
+              </Button>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="space-y-4">
+            {matches.map((match, i) => (
+              <Card key={`${match.lostItemId}-${match.foundItemId}`}
+                className="border-border/40 bg-card/50 backdrop-blur-sm hover:bg-card/80 transition-all overflow-hidden">
+                <CardContent className="p-0">
+                  {/* Score header */}
+                  <div className="flex items-center justify-between border-b border-border/30 bg-card/30 px-5 py-3">
+                    <ScoreBadge score={match.score} />
+                    <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                      <span>Text: {Math.round(match.textScore * 100)}%</span>
+                      <span>Zone: {match.zoneScore === 1 ? "✓" : "✗"}</span>
+                      <span>Time: {Math.round(match.temporalScore * 100)}%</span>
+                    </div>
+                  </div>
+
+                  {/* Match pair */}
+                  <div className="grid grid-cols-[1fr,auto,1fr] gap-4 p-5">
+                    {/* Lost Item */}
+                    <Link href={`/dashboard/item/${match.lostItemId}`} className="group space-y-2">
+                      <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-400">
+                        <PackageSearch className="h-3 w-3" /> LOST
+                      </span>
+                      <h3 className="font-semibold text-foreground group-hover:text-blue-400 transition-colors line-clamp-1">
+                        {match.lostItem.title}
+                      </h3>
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <Tag className="h-3 w-3" /> {match.lostItem.category}
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <MapPin className="h-3 w-3" /> {match.lostItem.zoneName}
+                      </div>
+                    </Link>
+
+                    {/* Arrow */}
+                    <div className="flex items-center justify-center">
+                      <div className="rounded-full bg-emerald-500/10 p-2">
+                        <ArrowRight className="h-4 w-4 text-emerald-400" />
+                      </div>
+                    </div>
+
+                    {/* Found Item */}
+                    <Link href={`/dashboard/item/${match.foundItemId}`} className="group space-y-2">
+                      <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-400">
+                        <PackagePlus className="h-3 w-3" /> FOUND
+                      </span>
+                      <h3 className="font-semibold text-foreground group-hover:text-emerald-400 transition-colors line-clamp-1">
+                        {match.foundItem.title}
+                      </h3>
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <Tag className="h-3 w-3" /> {match.foundItem.category}
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <MapPin className="h-3 w-3" /> {match.foundItem.zoneName}
+                      </div>
+                    </Link>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         )}
       </div>
-
-      {/* Score Legend */}
-      <div className="flex gap-4 text-xs text-muted-foreground">
-        <span className="flex items-center gap-1">
-          <Zap className="h-3 w-3 text-emerald-400" /> Text similarity (60%)
-        </span>
-        <span className="flex items-center gap-1">
-          <MapPin className="h-3 w-3 text-amber-400" /> Zone match (25%)
-        </span>
-        <span className="flex items-center gap-1">
-          <Clock className="h-3 w-3 text-blue-400" /> Time proximity (15%)
-        </span>
-      </div>
-
-      {matches.length === 0 ? (
-        <Card className="border-dashed border-border/60 bg-transparent">
-          <CardContent className="flex flex-col items-center justify-center py-16">
-            <div className="rounded-full bg-muted p-4 mb-4">
-              <Sparkles className="h-8 w-8 text-muted-foreground" />
-            </div>
-            <h3 className="text-lg font-semibold">No matches yet</h3>
-            <p className="text-sm text-muted-foreground mt-1 max-w-sm text-center">
-              When you report items, our engine will automatically scan for potential matches.
-              Report an item to get started!
-            </p>
-            <Button className="mt-4 bg-emerald-600 hover:bg-emerald-500 text-white" asChild>
-              <Link href="/dashboard/report">Report an Item</Link>
-            </Button>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="space-y-4">
-          {matches.map((match, i) => (
-            <Card key={`${match.lostItemId}-${match.foundItemId}`}
-              className="border-border/40 bg-card/50 backdrop-blur-sm hover:bg-card/80 transition-all overflow-hidden">
-              <CardContent className="p-0">
-                {/* Score header */}
-                <div className="flex items-center justify-between border-b border-border/30 bg-card/30 px-5 py-3">
-                  <ScoreBadge score={match.score} />
-                  <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                    <span>Text: {Math.round(match.textScore * 100)}%</span>
-                    <span>Zone: {match.zoneScore === 1 ? "✓" : "✗"}</span>
-                    <span>Time: {Math.round(match.temporalScore * 100)}%</span>
-                  </div>
-                </div>
-
-                {/* Match pair */}
-                <div className="grid grid-cols-[1fr,auto,1fr] gap-4 p-5">
-                  {/* Lost Item */}
-                  <Link href={`/dashboard/item/${match.lostItemId}`} className="group space-y-2">
-                    <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-400">
-                      <PackageSearch className="h-3 w-3" /> LOST
-                    </span>
-                    <h3 className="font-semibold text-foreground group-hover:text-blue-400 transition-colors line-clamp-1">
-                      {match.lostItem.title}
-                    </h3>
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <Tag className="h-3 w-3" /> {match.lostItem.category}
-                    </div>
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <MapPin className="h-3 w-3" /> {match.lostItem.zoneName}
-                    </div>
-                  </Link>
-
-                  {/* Arrow */}
-                  <div className="flex items-center justify-center">
-                    <div className="rounded-full bg-emerald-500/10 p-2">
-                      <ArrowRight className="h-4 w-4 text-emerald-400" />
-                    </div>
-                  </div>
-
-                  {/* Found Item */}
-                  <Link href={`/dashboard/item/${match.foundItemId}`} className="group space-y-2">
-                    <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-400">
-                      <PackagePlus className="h-3 w-3" /> FOUND
-                    </span>
-                    <h3 className="font-semibold text-foreground group-hover:text-emerald-400 transition-colors line-clamp-1">
-                      {match.foundItem.title}
-                    </h3>
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <Tag className="h-3 w-3" /> {match.foundItem.category}
-                    </div>
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <MapPin className="h-3 w-3" /> {match.foundItem.zoneName}
-                    </div>
-                  </Link>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+    );
+  } catch (error) {
+    console.error("NotificationsPage Fetch Error:", error);
+    return (
+      <div className="flex h-[50vh] flex-col items-center justify-center space-y-4 text-center">
+        <div className="rounded-full bg-destructive/10 p-4">
+          <Zap className="h-8 w-8 text-destructive" />
         </div>
-      )}
-    </div>
-  );
+        <div className="space-y-2">
+          <h2 className="text-xl font-bold italic tracking-tight text-white">Matching error</h2>
+          <p className="text-sm text-muted-foreground">We couldn't analyze the matching data. Please try again later.</p>
+        </div>
+      </div>
+    );
+  }
 }

@@ -16,8 +16,11 @@ export default function SignInPage() {
     setError("");
     setLoading(true);
 
+    // Domain check regex for NIT Silchar emails (e.g., student@ece.nits.ac.in)
+    const NITS_EMAIL_REGEX = /^[a-zA-Z0-9_.+-]+@([a-zA-Z0-9-]+\.)?nits\.ac\.in$/;
+
     // Client-side domain check
-    if (!email.endsWith("nits.ac.in")) {
+    if (!NITS_EMAIL_REGEX.test(email)) {
       setError("Only NIT Silchar institute emails (@*.nits.ac.in) are allowed.");
       setLoading(false);
       return;

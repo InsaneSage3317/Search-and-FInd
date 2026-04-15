@@ -1,7 +1,7 @@
 # STACK.md — Smart Lost & Found Technical Stack (2025)
 
 ## Primary Framework
-- **Frontend/Backend**: **Next.js 15 (App Router)**
+- **Frontend/Backend**: **Next.js 16 (App Router)**
     - **Rationale**: Single-repo codebase, server-side rendering for SEO (helping lost items show up in searches if enabled), and fast API route development.
     - **Confidence**: High
 

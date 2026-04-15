@@ -1,6 +1,6 @@
 # Phase 01: Foundation & Auth - Research
 
-## Technical Approach: Next.js 15 + Auth.js + Supabase
+## Technical Approach: Next.js 16 + Auth.js + Supabase
 
 ### 1. Authentication Domain Restriction
 To restrict signups to `*@*.nits.ac.in`, we will use the `signIn` callback in the Auth.js configuration.

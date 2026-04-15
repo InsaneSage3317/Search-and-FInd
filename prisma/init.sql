@@ -79,7 +79,7 @@ CREATE TABLE "Item" (
     "finderId" TEXT,
     "ownerId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "resolvedAt" TIMESTAMP(3),
     CONSTRAINT "Item_pkey" PRIMARY KEY ("id"),
     CONSTRAINT "Item_zoneId_fkey" FOREIGN KEY ("zoneId") REFERENCES "Zone"("id"),

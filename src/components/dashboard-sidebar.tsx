@@ -38,7 +38,7 @@ export function DashboardSidebar() {
   const user = {
     name: session?.user?.name || "User",
     email: session?.user?.email || "user@nits.ac.in",
-    initials: session?.user?.name?.split(" ").map(n => n[0]).join("") || "U",
+    initials: session?.user?.name?.split(" ").filter(Boolean).map(n => n[0]).join("").slice(0, 2) || "U",
   };
 
   return (

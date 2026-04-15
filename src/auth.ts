@@ -24,8 +24,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         }
 
         // TODO: Replace with Prisma DB lookup once Supabase is connected
-        // For now, accept any valid NITS email with password "demo123"
-        if (password === "demo123") {
+        // For now, accept any valid NITS email with password "demo123" only in development
+        if (process.env.NODE_ENV === "development" && password === "demo123") {
           return {
             id: email,
             email: email,

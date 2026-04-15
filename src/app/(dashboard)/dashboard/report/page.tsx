@@ -18,7 +18,21 @@ import Link from "next/link";
 
 type Zone = { id: string; name: string };
 
+import { Suspense } from "react";
+
 export default function ReportPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex h-[50vh] items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    }>
+      <ReportPageContent />
+    </Suspense>
+  );
+}
+
+function ReportPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialType = searchParams.get("type")?.toUpperCase() === "FOUND" ? "FOUND" : "LOST";

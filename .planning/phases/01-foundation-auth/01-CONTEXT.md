@@ -14,7 +14,7 @@ This phase establishes the technical foundation for the Smart Lost & Found syste
 ## Implementation Decisions
 
 ### Technical Stack
-- **Frontend/Backend**: Next.js 15 (App Router).
+- **Frontend/Backend**: Next.js 16 (App Router).
 - **Styling**: Tailwind CSS + shadcn/ui.
 - **Database**: PostgreSQL on **Supabase** via Prisma ORM.
 - **Authentication**: **Auth.js (NextAuth)** with Email/Magic-Links and domain restriction.

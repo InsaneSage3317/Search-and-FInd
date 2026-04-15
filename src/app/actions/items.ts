@@ -40,6 +40,10 @@ export async function createItem(formData: FormData) {
     return { error: "Please fill in all required fields." };
   }
 
+  if (type !== "LOST" && type !== "FOUND") {
+    return { error: "Invalid item type." };
+  }
+
   try {
     const item = await prisma.item.create({
       data: {
