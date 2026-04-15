@@ -10,6 +10,7 @@ import {
   Search, Filter, MapPin, Clock, Tag,
   PackageSearch, PackagePlus, X
 } from "lucide-react";
+import { formatShortDate } from "@/lib/date-utils";
 
 type Zone = { id: string; name: string };
 type Item = {
@@ -21,8 +22,8 @@ type Item = {
   category: string;
   createdAt: string | Date;
   zone: { id: string; name: string };
-  finder?: { name: string | null; email: string | null } | null;
-  owner?: { name: string | null; email: string | null } | null;
+  finder?: { name: string | null } | null;
+  owner?: { name: string | null } | null;
 };
 
 export function SearchPageClient({
@@ -190,7 +191,7 @@ export function SearchPageClient({
                     </span>
                     <span className="flex items-center gap-1">
                       <Clock className="h-3 w-3" />
-                      {new Date(item.createdAt).toLocaleDateString()}
+                      {formatShortDate(item.createdAt)}
                     </span>
                   </div>
                 </CardContent>

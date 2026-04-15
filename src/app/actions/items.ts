@@ -74,7 +74,9 @@ export async function getItems(filters?: {
   zoneId?: string;
   search?: string;
 }) {
-  const where: Record<string, unknown> = {};
+  const where: Record<string, unknown> = {
+    status: "REPORTED",
+  };
 
   if (filters?.type) where.type = filters.type;
   if (filters?.category) where.category = filters.category;
@@ -90,8 +92,8 @@ export async function getItems(filters?: {
     where,
     include: {
       zone: true,
-      finder: { select: { name: true, email: true } },
-      owner: { select: { name: true, email: true } },
+      finder: { select: { name: true } },
+      owner: { select: { name: true } },
     },
     orderBy: { createdAt: "desc" },
   });

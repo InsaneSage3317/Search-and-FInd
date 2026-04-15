@@ -1,6 +1,6 @@
 import { getItems } from "@/app/actions/items";
 import { getZones } from "@/app/actions/zones";
-import { SearchPageClient } from "./search-client";
+import { SearchPageClient } from "@/app/(dashboard)/dashboard/search/search-client";
 import { PackageSearch } from "lucide-react";
 
 export default async function SearchPage() {
@@ -15,7 +15,7 @@ export default async function SearchPage() {
           <PackageSearch className="h-8 w-8 text-destructive" />
         </div>
         <div className="space-y-2">
-          <h2 className="text-xl font-bold italic tracking-tight text-white">Something went wrong</h2>
+          <h2 className="text-xl font-bold italic tracking-tight text-foreground">Something went wrong</h2>
           <p className="text-sm text-muted-foreground">Failed to load search data. Please try refreshing the page.</p>
         </div>
       </div>

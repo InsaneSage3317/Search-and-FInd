@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { getDashboardStats, getRecentActivity } from "@/app/actions/items";
 import { auth } from "@/auth";
+import { formatShortDate } from "@/lib/date-utils";
 
 export default async function DashboardPage() {
   try {
@@ -23,7 +24,9 @@ export default async function DashboardPage() {
       auth(),
     ]);
 
-    const userName = session?.user?.name?.split(" ").filter(Boolean)[0] || "Finder";
+    const userName = session?.user?.name 
+      ? session.user.name.split(" ").filter(Boolean)[0] 
+      : "Finder";
 
     const statCards = [
       { name: "Reported Items", value: String(stats.reported), icon: Clock, color: "text-blue-400" },
@@ -134,9 +137,7 @@ export default async function DashboardPage() {
                               <MapPin className="h-3 w-3" /> {item.zone?.name ?? "Unknown"}
                             </span>
                             <span>
-                              {new Date(item.createdAt).toLocaleDateString("en-IN", { 
-                                month: "short", day: "numeric" 
-                              })}
+                              {formatShortDate(item.createdAt)}
                             </span>
                           </div>
                         </div>

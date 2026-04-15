@@ -1,4 +1,5 @@
 import { getMyItems } from "@/app/actions/items";
+import { formatShortDate } from "@/lib/date-utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -13,7 +14,7 @@ export default async function HistoryPage() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight">My History</h1>
           <p className="text-sm text-muted-foreground">
-            All items you have reported as lost or found.
+            Monitor your reports, track active matches, and manage your claimed items.
           </p>
         </div>
 
@@ -59,7 +60,7 @@ export default async function HistoryPage() {
                         item.status === "RESOLVED" ? "text-emerald-400" : "text-muted-foreground"
                       }`}>{item.status}</span>
                       <div className="text-[10px] text-muted-foreground mt-0.5">
-                        {new Date(item.createdAt).toLocaleDateString()}
+                        {formatShortDate(item.createdAt)}
                       </div>
                     </div>
                   </CardContent>
@@ -78,7 +79,7 @@ export default async function HistoryPage() {
           <Clock className="h-8 w-8 text-destructive" />
         </div>
         <div className="space-y-2">
-          <h2 className="text-xl font-bold italic tracking-tight text-white">Something went wrong</h2>
+          <h2 className="text-xl font-bold italic tracking-tight text-foreground">Something went wrong</h2>
           <p className="text-sm text-muted-foreground">Failed to load your history. Please try refreshing the page.</p>
         </div>
       </div>

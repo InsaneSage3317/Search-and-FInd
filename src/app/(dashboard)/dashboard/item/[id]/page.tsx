@@ -68,7 +68,7 @@ export default async function ItemDetailPage({
               </CardContent>
             </Card>
 
-            {item.identifyingDetail && (
+            {isOwner && item.identifyingDetail && (
               <Card className="border-amber-500/20 bg-amber-500/5">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-lg text-amber-400">
