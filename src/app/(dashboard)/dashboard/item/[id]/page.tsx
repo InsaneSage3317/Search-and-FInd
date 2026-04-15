@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ClaimButton } from "@/components/claim-button";
+import { HandoverControls } from "@/components/handover-controls";
 import Link from "next/link";
 import {
   ArrowLeft, MapPin, Clock, Tag, Shield, Zap, Sparkles,
@@ -30,6 +31,11 @@ export default async function ItemDetailPage({
     ));
 
     const isLost = item.type === "LOST";
+    const isFinder = item.finder?.email === currentUserEmail;
+    const isOwnerClaimant = !isLost && item.owner?.email === currentUserEmail;
+    const isFinderClaimant = isLost && item.finder?.email === currentUserEmail;
+    const isClaimant = isOwnerClaimant || isFinderClaimant;
+
     const accentClasses = isLost 
       ? { text: "text-blue-400", bg: "bg-blue-500/15", ring: "ring-blue-500/20", button: "bg-blue-600 hover:bg-blue-500 shadow-blue-500/20" } 
       : { text: "text-emerald-400", bg: "bg-emerald-500/15", ring: "ring-emerald-500/20", button: "bg-emerald-600 hover:bg-emerald-500 shadow-emerald-500/20" };
@@ -59,6 +65,15 @@ export default async function ItemDetailPage({
         <div className="grid gap-6 lg:grid-cols-3">
           {/* Main Details */}
           <div className="lg:col-span-2 space-y-6">
+            {(item.status === "MATCHED" || item.status === "RESOLVED") && (
+              <HandoverControls 
+                itemId={item.id}
+                status={item.status}
+                isFinder={isFinder}
+                isClaimant={isClaimant}
+              />
+            )}
+
             <Card className="border-border/40 bg-card/50 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="text-lg">Description</CardTitle>

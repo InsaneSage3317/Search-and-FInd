@@ -249,3 +249,108 @@ export async function getRecentActivity() {
 
   return items;
 }
+
+/**
+ * Marks an item as RESOLVED. Can be done by finder or owner.
+ */
+export async function resolveItem(itemId: string) {
+  const session = await auth();
+  const user = await prisma.user.findUnique({
+    where: { email: session?.user?.email ?? "" },
+  });
+
+  if (!user || !itemId) return { error: "Unauthorized or missing ID" };
+
+  try {
+    const item = await prisma.item.findUnique({ where: { id: itemId } });
+    if (!item) return { error: "Item not found" };
+
+    // Security: Only parties involved can resolve
+    if (item.finderId !== user.id && item.ownerId !== user.id) {
+      return { error: "Only the finder or owner can resolve this item" };
+    }
+
+    await prisma.item.update({
+      where: { id: itemId },
+      data: {
+        status: "RESOLVED",
+        resolvedAt: new Date(),
+      },
+    });
+
+    revalidatePath("/dashboard");
+    revalidatePath(`/dashboard/item/${itemId}`);
+    revalidatePath("/dashboard/history");
+    return { success: true };
+  } catch (e) {
+    console.error("Error resolving item:", e);
+    return { error: "Failed to resolve item" };
+  }
+}
+
+/**
+ * Unclaims an item, resetting it to REPORTED.
+ */
+export async function unclaimItem(itemId: string) {
+  const session = await auth();
+  const user = await prisma.user.findUnique({
+    where: { email: session?.user?.email ?? "" },
+  });
+
+  if (!user || !itemId) return { error: "Unauthorized or missing ID" };
+
+  try {
+    const item = await prisma.item.findUnique({ where: { id: itemId } });
+    if (!item) return { error: "Item not found" };
+
+    // Determine if this user was the one who added their ID last
+    const isOwnerClaimant = item.type === "FOUND" && item.ownerId === user.id;
+    const isFinderClaimant = item.type === "LOST" && item.finderId === user.id;
+
+    if (!isOwnerClaimant && !isFinderClaimant) {
+      return { error: "Only the claimant can retract this claim" };
+    }
+
+    const updateData = item.type === "FOUND" 
+      ? { ownerId: null, status: "REPORTED" as const }
+      : { finderId: null, status: "REPORTED" as const };
+
+    await prisma.item.update({
+      where: { id: itemId },
+      data: updateData,
+    });
+
+    revalidatePath("/dashboard");
+    revalidatePath(`/dashboard/item/${itemId}`);
+    revalidatePath("/dashboard/history");
+    return { success: true };
+  } catch (e) {
+    console.error("Error unclaiming item:", e);
+    return { error: "Failed to retract claim" };
+  }
+}
+
+/**
+ * Gets the number of active items per zone for the heatmap.
+ */
+export async function getZoneDensity() {
+  const zones = await prisma.zone.findMany({
+    include: {
+      _count: {
+        select: {
+          items: {
+            where: {
+              status: { in: ["REPORTED", "MATCHED"] },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  return zones.map(z => ({
+    id: z.id,
+    name: z.name,
+    count: z._count.items,
+  }));
+}
