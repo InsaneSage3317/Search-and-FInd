@@ -9,7 +9,7 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String    @id @default(uuid())
   name          String?
   email         String?   @unique
   emailVerified DateTime?
@@ -28,7 +28,7 @@ enum Role {
 }
 
 model Account {
-  id                 String  @id @default(cuid())
+  id                 String  @id @default(uuid())
   userId             String
   type               String
   provider           String
@@ -47,7 +47,7 @@ model Account {
 }
 
 model Session {
-  id           String   @id @default(cuid())
+  id           String   @id @default(uuid())
   sessionToken String   @unique
   userId       String
   expires      DateTime
@@ -63,14 +63,14 @@ model VerificationToken {
 }
 
 model Zone {
-  id      String   @id @default(cuid())
+  id      String   @id @default(uuid())
   name    String   @unique
   items   Item[]
   reports Report[]
 }
 
 model Item {
-  id               String   @id @default(cuid())
+  id               String   @id @default(uuid())
   title            String
   description      String
   identifyingDetail String?  // Hidden detail
@@ -109,7 +109,7 @@ enum Status {
 }
 
 model Report {
-  id          String   @id @default(cuid())
+  id          String   @id @default(uuid())
   type        ItemType
   description String
   

@@ -123,3 +123,17 @@ INSERT INTO "Zone" ("id", "name") VALUES
     (gen_random_uuid()::text, 'Gym & Sports Complex'),
     (gen_random_uuid()::text, 'Auditorium'),
     (gen_random_uuid()::text, 'Main Gate');
+
+-- Trigger to auto-update updatedAt column
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW."updatedAt" = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+CREATE TRIGGER update_item_updated_at
+    BEFORE UPDATE ON "Item"
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
