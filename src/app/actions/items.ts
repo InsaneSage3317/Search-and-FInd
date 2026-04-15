@@ -4,9 +4,28 @@ import { prisma } from "@/lib/db";
 import { auth } from "@/auth";
 import { revalidatePath } from "next/cache";
 
-export async function createItem(formData: FormData) {
+/**
+ * Ensure user exists in DB (auto-create from session for Credentials provider)
+ */
+async function ensureUser() {
   const session = await auth();
-  if (!session?.user?.id) {
+  if (!session?.user?.email) return null;
+
+  const user = await prisma.user.upsert({
+    where: { email: session.user.email },
+    update: {},
+    create: {
+      email: session.user.email,
+      name: session.user.name || session.user.email.split("@")[0],
+    },
+  });
+
+  return user;
+}
+
+export async function createItem(formData: FormData) {
+  const user = await ensureUser();
+  if (!user) {
     return { error: "You must be signed in to report an item." };
   }
 
@@ -31,8 +50,8 @@ export async function createItem(formData: FormData) {
         category,
         zoneId,
         ...(type === "FOUND"
-          ? { finderId: session.user.id }
-          : { ownerId: session.user.id }),
+          ? { finderId: user.id }
+          : { ownerId: user.id }),
       },
     });
 
@@ -90,13 +109,18 @@ export async function getItemById(id: string) {
 
 export async function getMyItems() {
   const session = await auth();
-  if (!session?.user?.id) return [];
+  if (!session?.user?.email) return [];
+
+  const user = await prisma.user.findUnique({
+    where: { email: session.user.email },
+  });
+  if (!user) return [];
 
   const items = await prisma.item.findMany({
     where: {
       OR: [
-        { finderId: session.user.id },
-        { ownerId: session.user.id },
+        { finderId: user.id },
+        { ownerId: user.id },
       ],
     },
     include: { zone: true },

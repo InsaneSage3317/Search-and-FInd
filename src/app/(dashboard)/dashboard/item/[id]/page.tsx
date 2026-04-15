@@ -1,10 +1,11 @@
 import { getItemById } from "@/app/actions/items";
+import { getMatchesForItem } from "@/app/actions/matches";
 import { notFound } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import {
-  ArrowLeft, MapPin, Clock, Tag, Shield,
+  ArrowLeft, MapPin, Clock, Tag, Shield, Zap, Sparkles,
   PackageSearch, PackagePlus, User
 } from "lucide-react";
 
@@ -16,6 +17,7 @@ export default async function ItemDetailPage({
   const { id } = await params;
   const item = await getItemById(id);
   if (!item) notFound();
+  const matches = await getMatchesForItem(id);
 
   const isLost = item.type === "LOST";
   const accentColor = isLost ? "blue" : "emerald";
@@ -135,6 +137,46 @@ export default async function ItemDetailPage({
           </Button>
         </div>
       </div>
+
+      {/* Potential Matches */}
+      {matches.length > 0 && (
+        <div className="space-y-4">
+          <h2 className="text-xl font-bold flex items-center gap-2">
+            <Sparkles className="h-5 w-5 text-emerald-400" />
+            Potential Matches ({matches.length})
+          </h2>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {matches.slice(0, 6).map((match) => {
+              const matchedItem = isLost ? match.foundItem : match.lostItem;
+              const pct = Math.round(match.score * 100);
+              const scoreColor = pct >= 80 ? "text-emerald-400 bg-emerald-500/15" : pct >= 60 ? "text-amber-400 bg-amber-500/15" : "text-blue-400 bg-blue-500/15";
+              return (
+                <Link key={matchedItem.id} href={`/dashboard/item/${matchedItem.id}`}>
+                  <Card className="group border-border/40 bg-card/50 hover:bg-card/80 transition-all cursor-pointer h-full">
+                    <CardContent className="p-4 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-bold ${scoreColor}`}>
+                          <Zap className="h-3 w-3" /> {pct}%
+                        </span>
+                        <span className={`text-xs font-semibold ${isLost ? "text-emerald-400" : "text-blue-400"}`}>
+                          {isLost ? "FOUND" : "LOST"}
+                        </span>
+                      </div>
+                      <h3 className="font-semibold group-hover:text-emerald-400 transition-colors line-clamp-1">
+                        {matchedItem.title}
+                      </h3>
+                      <div className="flex gap-3 text-xs text-muted-foreground">
+                        <span className="flex items-center gap-1"><Tag className="h-3 w-3" /> {matchedItem.category}</span>
+                        <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> {matchedItem.zoneName}</span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
