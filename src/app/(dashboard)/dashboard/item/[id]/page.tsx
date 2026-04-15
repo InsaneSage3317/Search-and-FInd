@@ -1,8 +1,10 @@
 import { getItemById } from "@/app/actions/items";
 import { getMatchesForItem } from "@/app/actions/matches";
+import { auth } from "@/auth";
 import { notFound } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { ClaimButton } from "@/components/claim-button";
 import Link from "next/link";
 import {
   ArrowLeft, MapPin, Clock, Tag, Shield, Zap, Sparkles,
@@ -17,9 +19,15 @@ export default async function ItemDetailPage({
   const { id } = await params;
   
   try {
-    const item = await getItemById(id);
+    const [item, session] = await Promise.all([getItemById(id), auth()]);
     if (!item) notFound();
     const matches = await getMatchesForItem(id);
+
+    // Determine if the current user owns this report
+    const currentUserEmail = session?.user?.email;
+    const isOwner = !!(currentUserEmail && (
+      item.finder?.email === currentUserEmail || item.owner?.email === currentUserEmail
+    ));
 
     const isLost = item.type === "LOST";
     const accentClasses = isLost 
@@ -126,11 +134,13 @@ export default async function ItemDetailPage({
               </CardContent>
             </Card>
 
-            <Button
-              className={`w-full h-11 shadow-lg ${accentClasses.button} text-white`}
-            >
-              {isLost ? "I Found This Item" : "This Is Mine"}
-            </Button>
+            <ClaimButton
+              itemId={item.id}
+              isLost={isLost}
+              status={item.status}
+              isOwner={isOwner}
+              buttonClass={accentClasses.button}
+            />
           </div>
         </div>
 

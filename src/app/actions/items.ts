@@ -133,3 +133,117 @@ export async function getMyItems() {
 
   return items;
 }
+
+/**
+ * Claim an item: if FOUND item → current user claims ownership.
+ * If LOST item → current user reports they found it.
+ * Updates status to MATCHED.
+ */
+export async function claimItem(itemId: string) {
+  const user = await ensureUser();
+  if (!user) {
+    return { error: "You must be signed in to claim an item." };
+  }
+
+  if (!itemId) {
+    return { error: "Item ID is required." };
+  }
+
+  try {
+    const item = await prisma.item.findUnique({ where: { id: itemId } });
+    if (!item) {
+      return { error: "Item not found." };
+    }
+
+    if (item.status === "RESOLVED" || item.status === "HANDOVER") {
+      return { error: "This item has already been claimed or resolved." };
+    }
+
+    // Prevent self-claiming
+    if (item.finderId === user.id || item.ownerId === user.id) {
+      return { error: "You cannot claim your own item." };
+    }
+
+    // FOUND item → user claims as owner; LOST item → user reports they found it
+    const updateData = item.type === "FOUND"
+      ? { ownerId: user.id, status: "MATCHED" as const }
+      : { finderId: user.id, status: "MATCHED" as const };
+
+    await prisma.item.update({
+      where: { id: itemId },
+      data: updateData,
+    });
+
+    revalidatePath("/dashboard");
+    revalidatePath("/dashboard/search");
+    revalidatePath("/dashboard/history");
+    revalidatePath(`/dashboard/item/${itemId}`);
+    return { success: true };
+  } catch (e) {
+    console.error("Error claiming item:", e);
+    return { error: "Failed to claim item. Please try again." };
+  }
+}
+
+/**
+ * Get dashboard statistics for the current user.
+ */
+export async function getDashboardStats() {
+  const session = await auth();
+  if (!session?.user?.email) {
+    return { reported: 0, matches: 0, recovered: 0 };
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { email: session.user.email },
+  });
+  if (!user) {
+    return { reported: 0, matches: 0, recovered: 0 };
+  }
+
+  const [reported, matches, recovered] = await Promise.all([
+    prisma.item.count({
+      where: {
+        OR: [{ finderId: user.id }, { ownerId: user.id }],
+      },
+    }),
+    prisma.item.count({
+      where: {
+        OR: [{ finderId: user.id }, { ownerId: user.id }],
+        status: "MATCHED",
+      },
+    }),
+    prisma.item.count({
+      where: {
+        OR: [{ finderId: user.id }, { ownerId: user.id }],
+        status: "RESOLVED",
+      },
+    }),
+  ]);
+
+  return { reported, matches, recovered };
+}
+
+/**
+ * Get recent activity for the current user (last 5 items).
+ */
+export async function getRecentActivity() {
+  const session = await auth();
+  if (!session?.user?.email) return [];
+
+  const user = await prisma.user.findUnique({
+    where: { email: session.user.email },
+  });
+  if (!user) return [];
+
+  const items = await prisma.item.findMany({
+    where: {
+      OR: [{ finderId: user.id }, { ownerId: user.id }],
+    },
+    include: { zone: true },
+    orderBy: { updatedAt: "desc" },
+    take: 5,
+  });
+
+  return items;
+}
