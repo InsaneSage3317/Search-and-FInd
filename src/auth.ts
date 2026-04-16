@@ -1,15 +1,22 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import { prisma } from "@/lib/db";
 
-// Domain validation regex for NIT Silchar emails
-const NITS_EMAIL_REGEX = /^[a-zA-Z0-9_.+-]+@([a-zA-Z0-9-]+\.)?nits\.ac\.in$/;
+// Authorized users for the hackathon phase
+const ALLOWED_EMAILS = [
+  "abhilesh_ug_25@ece.nits.ac.in",
+  "finder_ug_25@ece.nits.ac.in", // corrected per user intent for domain
+  "finder_ug_25@dept.nits.ac.in",
+  "owner_ug_25@dept.nits.ac.in",
+  "test_ug_25@dept.nits.ac.in",
+];
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
     Credentials({
       name: "Institute Email",
       credentials: {
-        email: { label: "Institute Email", type: "email", placeholder: "name_ug_25@ece.nits.ac.in" },
+        email: { label: "Institute Email", type: "email", placeholder: "abhilesh_ug_25@ece.nits.ac.in" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
@@ -18,22 +25,37 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         if (!email || !password) return null;
 
-        // Validate NIT Silchar email domain
-        if (!NITS_EMAIL_REGEX.test(email)) {
+        // Security: Strictly enforce whitelist for production
+        if (!ALLOWED_EMAILS.includes(email)) {
           return null;
         }
 
-        // TODO: Replace with Prisma DB lookup once Supabase is connected
-        // For now, accept any valid NITS email with password "demo123" only in development
-        if (process.env.NODE_ENV === "development" && password === "demo123") {
-          return {
-            id: email,
-            email: email,
-            name: email.split("@")[0].replace(/_/g, " "),
-          };
+        // For hackathon demo: accept a fixed password
+        if (password !== "demo123") {
+          return null;
         }
 
-        return null;
+        try {
+          // Synchronize user with database on every login (Upsert)
+          const user = await prisma.user.upsert({
+            where: { email },
+            update: { name: email.split("@")[0].replace(/_/g, " ") },
+            create: {
+              email,
+              name: email.split("@")[0].replace(/_/g, " "),
+              role: "USER",
+            },
+          });
+
+          return {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+          };
+        } catch (error) {
+          console.error("Auth database sync error:", error);
+          return null;
+        }
       },
     }),
   ],
