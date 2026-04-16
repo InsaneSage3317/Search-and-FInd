@@ -2,6 +2,9 @@
 
 import { prisma } from "@/lib/db";
 import { auth } from "@/auth";
+import { Item, Zone } from "@prisma/client";
+
+export type ItemWithZone = Item & { zone: Zone | null };
 import { revalidatePath } from "next/cache";
 
 /**
@@ -113,7 +116,7 @@ export async function getItemById(id: string) {
   return item;
 }
 
-export async function getMyItems() {
+export async function getMyItems(): Promise<ItemWithZone[]> {
   const session = await auth();
   if (!session?.user?.email) return [];
 
