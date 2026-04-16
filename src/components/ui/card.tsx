@@ -10,7 +10,7 @@ function Card({
     <div
       data-slot="card"
       className={cn(
-        "rounded-[var(--radius)] border border-border bg-card text-card-foreground shadow-sm transition-shadow hover:shadow-md",
+        "rounded-[var(--radius)] bg-card text-card-foreground shadow-md transition-all hover:shadow-lg",
         className
       )}
       {...props}

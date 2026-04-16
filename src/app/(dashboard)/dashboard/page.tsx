@@ -37,64 +37,66 @@ export default async function DashboardPage() {
     return (
       <div className="space-y-10">
         {/* Header */}
-        <div className="flex flex-col gap-1">
-          <h1 className="text-4xl font-bold tracking-tight text-foreground">Welcome back, {userName}!</h1>
-          <p className="text-muted-foreground text-lg">
+        <div className="flex flex-col gap-2">
+          <h1 className="text-5xl font-black tracking-tight text-foreground">Welcome back, {userName}!</h1>
+          <p className="text-muted-foreground text-xl font-medium tracking-tight">
             Manage your campus reports and help find lost belongings across NIT Silchar.
           </p>
         </div>
 
         {/* Stats */}
-        <div className="grid gap-6 sm:grid-cols-3">
+        <div className="grid gap-8 sm:grid-cols-3">
           {statCards.map((stat) => (
-            <Card key={stat.name} className="border-none shadow-sm hover:shadow-md transition-all">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-bold uppercase tracking-wider text-muted-foreground">{stat.name}</CardTitle>
-                <stat.icon className={`h-5 w-5 ${stat.color === 'text-blue-400' ? 'text-primary' : stat.color}`} />
+            <Card key={stat.name} className="shadow-md hover:shadow-xl transition-all border-none">
+              <CardHeader className="flex flex-row items-center justify-between pb-4 p-8">
+                <CardTitle className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground/60">{stat.name}</CardTitle>
+                <div className="rounded-2xl bg-primary/5 p-3">
+                  <stat.icon className="h-5 w-5 text-primary" />
+                </div>
               </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold tracking-tight">{stat.value}</div>
+              <CardContent className="px-8 pb-8">
+                <div className="text-4xl font-black tracking-tighter">{stat.value}</div>
               </CardContent>
             </Card>
           ))}
         </div>
 
         {/* Quick Actions */}
-        <div className="grid gap-8 sm:grid-cols-2">
-          <Card className="relative overflow-hidden border-none bg-primary/5 shadow-sm hover:shadow-md transition-all group/action">
-            <div className="absolute right-[-20px] top-[-20px] opacity-10 group-hover/action:scale-110 transition-transform">
-              <PlusCircle className="h-40 w-40 text-primary" />
+        <div className="grid gap-10 sm:grid-cols-2">
+          <Card className="relative overflow-hidden border-none bg-card shadow-lg hover:shadow-2xl transition-all group/action p-4">
+            <div className="absolute right-[-30px] top-[-30px] opacity-[0.03] group-hover/action:opacity-[0.07] group-hover/action:scale-110 transition-all">
+              <PlusCircle className="h-56 w-56 text-primary" />
             </div>
-            <CardHeader>
-              <CardTitle className="text-2xl font-bold">I found something</CardTitle>
-              <CardDescription className="text-base">
-                Report an item you found on campus to help its owner.
+            <CardHeader className="p-10 pb-4">
+              <CardTitle className="text-3xl font-black tracking-tight">I found something</CardTitle>
+              <CardDescription className="text-lg font-medium text-muted-foreground/70">
+                Help your fellow student by reporting an item you found on campus.
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              <Button className="w-full h-12 text-base" asChild>
+            <CardContent className="p-10 pt-0">
+              <Button className="h-14 px-10 text-lg font-black" asChild>
                 <Link href="/dashboard/report?type=found">
-                  <PlusCircle className="mr-2 h-5 w-5" />
+                  <PlusCircle className="mr-3 h-6 w-6" />
                   Report Found Item
                 </Link>
               </Button>
             </CardContent>
           </Card>
 
-          <Card className="relative overflow-hidden border-none bg-sidebar/5 shadow-sm hover:shadow-md transition-all group/action">
-            <div className="absolute right-[-20px] top-[-20px] opacity-10 group-hover/action:scale-110 transition-transform text-sidebar">
-              <Search className="h-40 w-40" />
+          <Card className="relative overflow-hidden border-none bg-card shadow-lg hover:shadow-2xl transition-all group/action p-4">
+            <div className="absolute right-[-30px] top-[-30px] opacity-[0.03] group-hover/action:opacity-[0.07] group-hover/action:scale-110 transition-all">
+              <Search className="h-56 w-56 text-foreground" />
             </div>
-            <CardHeader>
-              <CardTitle className="text-2xl font-bold">I lost something</CardTitle>
-              <CardDescription className="text-base">
-                Post a report for your lost item to start matching.
+            <CardHeader className="p-10 pb-4">
+              <CardTitle className="text-3xl font-black tracking-tight">I lost something</CardTitle>
+              <CardDescription className="text-lg font-medium text-muted-foreground/70">
+                Create a detailed report of your lost item for our matching engine.
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              <Button variant="outline" className="w-full h-12 text-base border-2" asChild>
+            <CardContent className="p-10 pt-0">
+              <Button variant="outline" className="h-14 px-10 text-lg font-black border-2" asChild>
                 <Link href="/dashboard/report?type=lost">
-                  <Search className="mr-2 h-5 w-5" />
+                  <Search className="mr-3 h-6 w-6" />
                   Report Lost Item
                 </Link>
               </Button>
@@ -123,45 +125,45 @@ export default async function DashboardPage() {
                 <Link href="/dashboard/history">View all history <ArrowRight className="ml-2 h-4 w-4" /></Link>
               </Button>
             </div>
-            <div className="grid gap-4">
+            <div className="grid gap-6">
               {recentItems.map((item) => {
                 const isLost = item.type === "LOST";
                 return (
                   <Link key={item.id} href={`/dashboard/item/${item.id}`}>
-                    <Card className="group border-none bg-card hover:bg-muted/30 transition-all cursor-pointer shadow-sm hover:shadow-md">
-                      <CardContent className="flex items-center gap-6 p-6">
-                        <div className={`rounded-2xl p-4 ${isLost ? "bg-sidebar/10" : "bg-primary/10"}`}>
+                    <Card className="group border-none bg-card hover:bg-white transition-all cursor-pointer shadow-sm hover:shadow-lg">
+                      <CardContent className="flex items-center gap-8 p-8">
+                        <div className={`rounded-3xl p-5 ${isLost ? "bg-sidebar-accent" : "bg-primary/10"}`}>
                           {isLost 
-                            ? <PackageSearch className="h-6 w-6 text-sidebar" />
-                            : <PackagePlus className="h-6 w-6 text-primary" />
+                            ? <PackageSearch className="h-7 w-7 text-sidebar-foreground" />
+                            : <PackagePlus className="h-7 w-7 text-primary" />
                           }
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h3 className="font-bold text-lg truncate group-hover:text-primary transition-colors leading-tight">
+                          <h3 className="font-black text-xl truncate group-hover:text-primary transition-colors leading-tight tracking-tight">
                             {item.title}
                           </h3>
-                          <div className="flex items-center gap-4 mt-1.5 text-sm text-muted-foreground">
-                            <span className={`font-bold px-2 py-0.5 rounded-md text-[10px] uppercase tracking-widest ${isLost ? "bg-sidebar/10 text-sidebar" : "bg-primary/10 text-primary"}`}>
+                          <div className="flex items-center gap-5 mt-2 text-sm text-muted-foreground font-bold">
+                            <span className={`px-3 py-1 rounded-xl text-[11px] uppercase tracking-widest ${isLost ? "bg-sidebar-accent text-sidebar-foreground" : "bg-primary/10 text-primary"}`}>
                               {item.type}
                             </span>
-                            <span className="flex items-center gap-1.5 font-medium">
-                              <MapPin className="h-4 w-4 text-muted-foreground/60" /> {item.zone?.name ?? "Unknown"}
+                            <span className="flex items-center gap-2">
+                              <MapPin className="h-4 w-4 text-primary/40" /> {item.zone?.name ?? "Unknown"}
                             </span>
-                            <span className="font-medium">
+                            <span>
                               {formatShortDate(item.createdAt)}
                             </span>
                           </div>
                         </div>
-                        <div className="flex items-center gap-4">
-                          <span className={`text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest ${
+                        <div className="flex items-center gap-5">
+                          <span className={`text-[11px] font-black px-4 py-1.5 rounded-2xl uppercase tracking-[0.1em] ${
                             item.status === "MATCHED" ? "bg-amber-100 text-amber-700" :
-                            item.status === "RESOLVED" ? "bg-emerald-100 text-emerald-700" :
-                            "bg-muted text-muted-foreground"
+                            item.status === "RESOLVED" ? "bg-emerald-100 text-emerald-800" :
+                            "bg-slate-100 text-slate-600"
                           }`}>
                             {item.status}
                           </span>
-                          <div className="rounded-full bg-muted p-2 group-hover:bg-primary/10 transition-colors">
-                            <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                          <div className="rounded-2xl bg-sidebar-accent p-3 group-hover:bg-primary group-hover:text-primary-foreground transition-all">
+                            <ArrowRight className="h-5 w-5" />
                           </div>
                         </div>
                       </CardContent>

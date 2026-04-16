@@ -11,13 +11,13 @@ export function Navbar() {
     <nav className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 group">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg shadow-emerald-500/20 transition-shadow group-hover:shadow-emerald-500/40">
+        <Link href="/" className="flex items-center gap-3 group">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-lg shadow-primary/20">
             <svg
-              className="h-5 w-5 text-white"
+              className="h-6 w-6"
               fill="none"
               viewBox="0 0 24 24"
-              strokeWidth={2}
+              strokeWidth={2.5}
               stroke="currentColor"
             >
               <path
@@ -27,8 +27,8 @@ export function Navbar() {
               />
             </svg>
           </div>
-          <span className="text-lg font-bold tracking-tight">
-            Find<span className="text-emerald-400">It</span>
+          <span className="text-xl font-black tracking-tight text-foreground">
+            FindIt
           </span>
         </Link>
 
