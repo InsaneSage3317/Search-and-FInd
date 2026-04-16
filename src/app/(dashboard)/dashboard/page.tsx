@@ -35,60 +35,66 @@ export default async function DashboardPage() {
     ];
 
     return (
-      <div className="space-y-8">
+      <div className="space-y-10">
         {/* Header */}
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Welcome, {userName}!</h1>
-          <p className="text-muted-foreground">
-            Track your reported items and search for lost belongings across NIT Silchar.
+        <div className="flex flex-col gap-1">
+          <h1 className="text-4xl font-bold tracking-tight text-foreground">Welcome back, {userName}!</h1>
+          <p className="text-muted-foreground text-lg">
+            Manage your campus reports and help find lost belongings across NIT Silchar.
           </p>
         </div>
 
         {/* Stats */}
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-3">
           {statCards.map((stat) => (
-            <Card key={stat.name} className="border-border/40 bg-card/50 backdrop-blur-sm transition-all hover:bg-card/80">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">{stat.name}</CardTitle>
-                <stat.icon className={`h-4 w-4 ${stat.color}`} />
+            <Card key={stat.name} className="border-none shadow-sm hover:shadow-md transition-all">
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-bold uppercase tracking-wider text-muted-foreground">{stat.name}</CardTitle>
+                <stat.icon className={`h-5 w-5 ${stat.color === 'text-blue-400' ? 'text-primary' : stat.color}`} />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{stat.value}</div>
+                <div className="text-3xl font-bold tracking-tight">{stat.value}</div>
               </CardContent>
             </Card>
           ))}
         </div>
 
         {/* Quick Actions */}
-        <div className="grid gap-6 sm:grid-cols-2">
-          <Card className="border-emerald-500/20 bg-emerald-500/5 hover:bg-emerald-500/10 transition-colors">
+        <div className="grid gap-8 sm:grid-cols-2">
+          <Card className="relative overflow-hidden border-none bg-primary/5 shadow-sm hover:shadow-md transition-all group/action">
+            <div className="absolute right-[-20px] top-[-20px] opacity-10 group-hover/action:scale-110 transition-transform">
+              <PlusCircle className="h-40 w-40 text-primary" />
+            </div>
             <CardHeader>
-              <CardTitle>I found something</CardTitle>
-              <CardDescription>
-                Help your fellow student by reporting an item you found on campus.
+              <CardTitle className="text-2xl font-bold">I found something</CardTitle>
+              <CardDescription className="text-base">
+                Report an item you found on campus to help its owner.
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button className="w-full bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-500/20" asChild>
+              <Button className="w-full h-12 text-base" asChild>
                 <Link href="/dashboard/report?type=found">
-                  <PlusCircle className="mr-2 h-4 w-4" />
+                  <PlusCircle className="mr-2 h-5 w-5" />
                   Report Found Item
                 </Link>
               </Button>
             </CardContent>
           </Card>
 
-          <Card className="border-blue-500/20 bg-blue-500/5 hover:bg-blue-500/10 transition-colors">
+          <Card className="relative overflow-hidden border-none bg-sidebar/5 shadow-sm hover:shadow-md transition-all group/action">
+            <div className="absolute right-[-20px] top-[-20px] opacity-10 group-hover/action:scale-110 transition-transform text-sidebar">
+              <Search className="h-40 w-40" />
+            </div>
             <CardHeader>
-              <CardTitle>I lost something</CardTitle>
-              <CardDescription>
-                Create a detailed report of your lost item for our matching engine.
+              <CardTitle className="text-2xl font-bold">I lost something</CardTitle>
+              <CardDescription className="text-base">
+                Post a report for your lost item to start matching.
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button className="w-full bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-500/20" asChild>
+              <Button variant="outline" className="w-full h-12 text-base border-2" asChild>
                 <Link href="/dashboard/report?type=lost">
-                  <Search className="mr-2 h-4 w-4" />
+                  <Search className="mr-2 h-5 w-5" />
                   Report Lost Item
                 </Link>
               </Button>
@@ -98,58 +104,65 @@ export default async function DashboardPage() {
 
         {/* Recent Activity */}
         {recentItems.length === 0 ? (
-          <Card className="border-dashed border-border/60 bg-transparent">
-            <CardContent className="flex flex-col items-center justify-center py-12">
-              <div className="rounded-full bg-muted p-4 mb-4">
-                <Clock className="h-8 w-8 text-muted-foreground" />
+          <Card className="border-dashed border-2 bg-transparent shadow-none">
+            <CardContent className="flex flex-col items-center justify-center py-16">
+              <div className="rounded-full bg-muted/50 p-6 mb-6">
+                <Clock className="h-10 w-10 text-muted-foreground" />
               </div>
-              <h3 className="text-lg font-semibold text-foreground">No recent activity</h3>
-              <p className="text-sm text-muted-foreground max-w-xs text-center mt-1">
-                When you report or find items, they will appear here for you to track.
+              <h3 className="text-xl font-bold text-foreground">No recent activity yet</h3>
+              <p className="text-muted-foreground max-w-sm text-center mt-2">
+                Your reported items and active matches will appear here once you start using the system.
               </p>
             </CardContent>
           </Card>
         ) : (
-          <div className="space-y-3">
-            <h2 className="text-lg font-semibold tracking-tight">Recent Activity</h2>
-            <div className="space-y-2">
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold tracking-tight">Recent Activity</h2>
+              <Button variant="ghost" className="text-primary font-bold" asChild>
+                <Link href="/dashboard/history">View all history <ArrowRight className="ml-2 h-4 w-4" /></Link>
+              </Button>
+            </div>
+            <div className="grid gap-4">
               {recentItems.map((item) => {
                 const isLost = item.type === "LOST";
                 return (
                   <Link key={item.id} href={`/dashboard/item/${item.id}`}>
-                    <Card className="group border-border/40 bg-card/50 hover:bg-card/80 transition-all cursor-pointer">
-                      <CardContent className="flex items-center gap-4 p-4">
-                        <div className={`rounded-lg p-2 ${isLost ? "bg-blue-500/10" : "bg-emerald-500/10"}`}>
+                    <Card className="group border-none bg-card hover:bg-muted/30 transition-all cursor-pointer shadow-sm hover:shadow-md">
+                      <CardContent className="flex items-center gap-6 p-6">
+                        <div className={`rounded-2xl p-4 ${isLost ? "bg-sidebar/10" : "bg-primary/10"}`}>
                           {isLost 
-                            ? <PackageSearch className="h-5 w-5 text-blue-400" />
-                            : <PackagePlus className="h-5 w-5 text-emerald-400" />
+                            ? <PackageSearch className="h-6 w-6 text-sidebar" />
+                            : <PackagePlus className="h-6 w-6 text-primary" />
                           }
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h3 className="font-medium text-sm truncate group-hover:text-emerald-400 transition-colors">
+                          <h3 className="font-bold text-lg truncate group-hover:text-primary transition-colors leading-tight">
                             {item.title}
                           </h3>
-                          <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
-                            <span className={`font-semibold ${isLost ? "text-blue-400" : "text-emerald-400"}`}>
+                          <div className="flex items-center gap-4 mt-1.5 text-sm text-muted-foreground">
+                            <span className={`font-bold px-2 py-0.5 rounded-md text-[10px] uppercase tracking-widest ${isLost ? "bg-sidebar/10 text-sidebar" : "bg-primary/10 text-primary"}`}>
                               {item.type}
                             </span>
-                            <span className="flex items-center gap-1">
-                              <MapPin className="h-3 w-3" /> {item.zone?.name ?? "Unknown"}
+                            <span className="flex items-center gap-1.5 font-medium">
+                              <MapPin className="h-4 w-4 text-muted-foreground/60" /> {item.zone?.name ?? "Unknown"}
                             </span>
-                            <span>
+                            <span className="font-medium">
                               {formatShortDate(item.createdAt)}
                             </span>
                           </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
-                            item.status === "MATCHED" ? "bg-amber-500/15 text-amber-400" :
-                            item.status === "RESOLVED" ? "bg-emerald-500/15 text-emerald-400" :
+                        <div className="flex items-center gap-4">
+                          <span className={`text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest ${
+                            item.status === "MATCHED" ? "bg-amber-100 text-amber-700" :
+                            item.status === "RESOLVED" ? "bg-emerald-100 text-emerald-700" :
                             "bg-muted text-muted-foreground"
                           }`}>
                             {item.status}
                           </span>
-                          <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-emerald-400 transition-colors" />
+                          <div className="rounded-full bg-muted p-2 group-hover:bg-primary/10 transition-colors">
+                            <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                          </div>
                         </div>
                       </CardContent>
                     </Card>

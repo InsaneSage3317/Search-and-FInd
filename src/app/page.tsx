@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
 const features = [
   {
@@ -66,32 +67,32 @@ export default function Home() {
         {/* Hero */}
         <section className="relative overflow-hidden">
           {/* Gradient orbs */}
-          <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[500px] w-[800px] rounded-full bg-emerald-500/10 blur-3xl" />
-          <div className="pointer-events-none absolute top-20 right-0 h-[300px] w-[400px] rounded-full bg-teal-500/8 blur-3xl" />
+          <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[600px] w-[1000px] rounded-full bg-primary/5 blur-3xl" />
+          <div className="pointer-events-none absolute top-20 right-0 h-[400px] w-[500px] rounded-full bg-primary/5 blur-3xl" />
 
-          <div className="relative mx-auto max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8 lg:py-40">
-            <div className="mx-auto max-w-3xl text-center">
-              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-4 py-1.5 text-sm font-medium text-emerald-400">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                Built for NIT Silchar
+          <div className="relative mx-auto max-w-7xl px-6 py-32 sm:px-8 sm:py-40 lg:px-12 lg:py-48">
+            <div className="mx-auto max-w-4xl text-center">
+              <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-6 py-2 text-sm font-bold text-primary tracking-wide">
+                <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
+                BUILT FOR NIT SILCHAR
               </div>
 
-              <h1 className="text-4xl font-bold tracking-tight sm:text-6xl lg:text-7xl">
+              <h1 className="text-5xl font-extrabold tracking-tight sm:text-7xl lg:text-8xl">
                 Never Lose What{" "}
-                <span className="bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-primary via-emerald-400 to-teal-400 bg-clip-text text-transparent">
                   Matters
                 </span>
               </h1>
 
-              <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-muted-foreground">
+              <p className="mx-auto mt-8 max-w-2xl text-xl leading-relaxed text-muted-foreground/80 font-medium tracking-tight">
                 Smart matching, zone-based filtering, and verified claims — the campus lost &amp; found
                 system that actually works.
               </p>
 
-              <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+              <div className="mt-12 flex flex-col items-center justify-center gap-6 sm:flex-row">
                 <Button
                   size="lg"
-                  className="w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-xl shadow-emerald-500/20 hover:shadow-emerald-500/40 transition-all text-base px-8"
+                  className="w-full sm:w-auto text-lg h-14 px-10"
                   asChild
                 >
                   <Link href="/auth/signin">Report a Lost Item</Link>
@@ -99,7 +100,7 @@ export default function Home() {
                 <Button
                   size="lg"
                   variant="outline"
-                  className="w-full sm:w-auto border-border/60 text-base px-8"
+                  className="w-full sm:w-auto text-lg h-14 px-10 border-2"
                   asChild
                 >
                   <Link href="/auth/signin">I Found Something</Link>
@@ -107,15 +108,15 @@ export default function Home() {
               </div>
 
               {/* Stats */}
-              <div className="mx-auto mt-16 grid max-w-lg grid-cols-3 gap-8">
+              <div className="mx-auto mt-20 grid max-w-lg grid-cols-3 gap-12">
                 {[
                   { value: "100%", label: "Campus Coverage" },
                   { value: "12+", label: "Smart Zones" },
                   { value: "Secure", label: "Verified Claims" },
                 ].map((stat) => (
-                  <div key={stat.label} className="text-center">
-                    <div className="text-2xl font-bold text-emerald-400 sm:text-3xl">{stat.value}</div>
-                    <div className="mt-1 text-xs text-muted-foreground sm:text-sm">{stat.label}</div>
+                  <div key={stat.label} className="text-center group">
+                    <div className="text-3xl font-bold text-primary sm:text-4xl transition-transform group-hover:scale-110">{stat.value}</div>
+                    <div className="mt-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">{stat.label}</div>
                   </div>
                 ))}
               </div>
@@ -124,59 +125,59 @@ export default function Home() {
         </section>
 
         {/* Features */}
-        <section id="features" className="border-t border-border/40 bg-card/30">
-          <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
-            <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+        <section id="features" className="bg-muted/30">
+          <div className="mx-auto max-w-7xl px-6 py-32 sm:px-8 lg:px-12">
+            <div className="mx-auto max-w-2xl text-center mb-20">
+              <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
                 Intelligent by Design
               </h2>
-              <p className="mt-4 text-muted-foreground">
+              <p className="mt-4 text-lg text-muted-foreground font-medium">
                 Every feature is engineered to maximize the chance of reuniting you with your belongings.
               </p>
             </div>
 
-            <div className="mx-auto mt-16 grid max-w-5xl grid-cols-1 gap-6 sm:grid-cols-2">
+            <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8 sm:grid-cols-2">
               {features.map((feature) => (
-                <div
+                <Card
                   key={feature.title}
-                  className="group relative rounded-2xl border border-border/40 bg-card/50 p-8 transition-all hover:border-emerald-500/30 hover:bg-card/80 hover:shadow-lg hover:shadow-emerald-500/5"
+                  className="group relative border-none p-10 transition-all hover:bg-card hover:shadow-xl shadow-sm"
                 >
-                  <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400 transition-colors group-hover:bg-emerald-500/20">
+                  <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-all group-hover:scale-110 group-hover:bg-primary group-hover:text-primary-foreground">
                     {feature.icon}
                   </div>
-                  <h3 className="text-lg font-semibold">{feature.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  <h3 className="text-2xl font-bold tracking-tight">{feature.title}</h3>
+                  <p className="mt-4 text-base leading-relaxed text-muted-foreground/80 font-medium">
                     {feature.description}
                   </p>
-                </div>
+                </Card>
               ))}
             </div>
           </div>
         </section>
 
         {/* How It Works */}
-        <section id="how-it-works" className="border-t border-border/40">
-          <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
-            <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+        <section id="how-it-works" className="bg-background">
+          <div className="mx-auto max-w-7xl px-6 py-32 sm:px-8 lg:px-12">
+            <div className="mx-auto max-w-2xl text-center mb-20">
+              <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
                 Four Simple Steps
               </h2>
-              <p className="mt-4 text-muted-foreground">
+              <p className="mt-4 text-lg text-muted-foreground font-medium">
                 From reporting to recovery — we make it seamless.
               </p>
             </div>
 
-            <div className="mx-auto mt-16 grid max-w-4xl grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="mx-auto grid max-w-6xl grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-4">
               {steps.map((s, i) => (
-                <div key={s.step} className="relative text-center">
-                  <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 text-xl font-bold text-emerald-400 ring-1 ring-emerald-500/20">
+                <div key={s.step} className="relative text-center group">
+                  <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-3xl bg-secondary text-2xl font-black text-primary shadow-inner transition-transform group-hover:rotate-6">
                     {s.step}
                   </div>
-                  <h3 className="text-base font-semibold">{s.title}</h3>
-                  <p className="mt-2 text-sm text-muted-foreground">{s.description}</p>
+                  <h3 className="text-xl font-bold tracking-tight">{s.title}</h3>
+                  <p className="mt-3 text-base text-muted-foreground font-medium">{s.description}</p>
                   {i < steps.length - 1 && (
-                    <div className="pointer-events-none absolute right-0 top-7 hidden w-8 text-border lg:block">
-                      <svg className="h-4 w-full" viewBox="0 0 32 16" fill="none"><path d="M0 8h28m0 0l-6-6m6 6l-6 6" stroke="currentColor" strokeWidth="1.5" /></svg>
+                    <div className="pointer-events-none absolute right-[-2.5rem] top-8 hidden w-10 text-muted-foreground/20 lg:block">
+                      <svg className="h-6 w-full" viewBox="0 0 32 16" fill="none"><path d="M0 8h28m0 0l-6-6m6 6l-6 6" stroke="currentColor" strokeWidth="2.5" /></svg>
                     </div>
                   )}
                 </div>
@@ -186,22 +187,22 @@ export default function Home() {
         </section>
 
         {/* Campus Zones */}
-        <section id="zones" className="border-t border-border/40 bg-card/30">
-          <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
-            <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+        <section id="zones" className="bg-muted/30">
+          <div className="mx-auto max-w-7xl px-6 py-32 sm:px-8 lg:px-12">
+            <div className="mx-auto max-w-2xl text-center mb-16">
+              <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
                 Every Corner Covered
               </h2>
-              <p className="mt-4 text-muted-foreground">
+              <p className="mt-4 text-lg text-muted-foreground font-medium">
                 12+ campus zones mapped for precise location filtering.
               </p>
             </div>
 
-            <div className="mx-auto mt-12 flex max-w-3xl flex-wrap items-center justify-center gap-3">
+            <div className="mx-auto flex max-w-4xl flex-wrap items-center justify-center gap-4">
               {zones.map((zone) => (
                 <span
                   key={zone}
-                  className="rounded-full border border-border/60 bg-background/80 px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:border-emerald-500/40 hover:text-foreground"
+                  className="rounded-2xl border border-transparent bg-card px-8 py-3 text-sm font-bold text-muted-foreground transition-all hover:bg-primary/10 hover:text-primary hover:scale-105 shadow-sm"
                 >
                   {zone}
                 </span>
@@ -211,23 +212,25 @@ export default function Home() {
         </section>
 
         {/* CTA */}
-        <section className="border-t border-border/40">
-          <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-500/10 via-teal-500/10 to-cyan-500/10 p-12 text-center ring-1 ring-emerald-500/20 sm:p-16">
-              <div className="pointer-events-none absolute -bottom-10 -right-10 h-[300px] w-[300px] rounded-full bg-emerald-500/10 blur-3xl" />
-              <h2 className="relative text-3xl font-bold tracking-tight sm:text-4xl">
-                Ready to Find What&apos;s Yours?
+        <section className="bg-background">
+          <div className="mx-auto max-w-7xl px-6 py-32 sm:px-8 lg:px-12">
+            <div className="relative overflow-hidden rounded-[3rem] bg-sidebar p-16 text-center shadow-2xl sm:p-24 group">
+              <div className="pointer-events-none absolute -bottom-20 -right-20 h-[400px] w-[400px] rounded-full bg-primary/10 blur-3xl transition-transform group-hover:scale-110" />
+              <div className="pointer-events-none absolute -top-20 -left-20 h-[400px] w-[400px] rounded-full bg-primary/10 blur-3xl transition-transform group-hover:scale-110" />
+              
+              <h2 className="relative text-4xl font-extrabold tracking-tight text-white sm:text-6xl mb-6">
+                Ready to Find Yours?
               </h2>
-              <p className="relative mt-4 text-muted-foreground">
-                Sign in with your NIT Silchar email and start reporting.
+              <p className="relative mt-4 text-xl text-sidebar-foreground/60 font-medium max-w-2xl mx-auto">
+                Sign in with your NIT Silchar email and join the most efficient lost & found network on campus.
               </p>
-              <div className="relative mt-8">
+              <div className="relative mt-12">
                 <Button
                   size="lg"
-                  className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-xl shadow-emerald-500/20 hover:shadow-emerald-500/40 transition-all text-base px-10"
+                  className="text-lg h-16 px-16 rounded-2xl shadow-2xl shadow-primary/20"
                   asChild
                 >
-                  <Link href="/auth/signin">Get Started</Link>
+                  <Link href="/auth/signin">Get Started Now</Link>
                 </Button>
               </div>
             </div>

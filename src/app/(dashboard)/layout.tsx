@@ -8,8 +8,8 @@ export default function DashboardLayout({
   return (
     <div className="flex h-screen overflow-hidden bg-background">
       <DashboardSidebar />
-      <main className="flex-1 overflow-y-auto bg-card/10 p-8">
-        <div className="mx-auto max-w-5xl">
+      <main className="flex-1 overflow-y-auto p-12">
+        <div className="mx-auto max-w-6xl">
           {children}
         </div>
       </main>
