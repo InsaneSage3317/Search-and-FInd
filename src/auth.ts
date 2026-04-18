@@ -2,14 +2,8 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { prisma } from "@/lib/db";
 
-// Authorized users for the hackathon phase
-const ALLOWED_EMAILS = [
-  "abhilesh_ug_25@ece.nits.ac.in",
-  "finder_ug_25@ece.nits.ac.in", // corrected per user intent for domain
-  "finder_ug_25@dept.nits.ac.in",
-  "owner_ug_25@dept.nits.ac.in",
-  "test_ug_25@dept.nits.ac.in",
-];
+// Domain check regex for NIT Silchar emails (e.g., student@ece.nits.ac.in)
+const NITS_EMAIL_REGEX = /^[a-zA-Z0-9_.+-]+@([a-zA-Z0-9-]+\.)?nits\.ac\.in$/;
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
@@ -25,8 +19,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         if (!email || !password) return null;
 
-        // Security: Strictly enforce whitelist for production
-        if (!ALLOWED_EMAILS.includes(email)) {
+        // Security: Enforce NIT Silchar domain check
+        if (!NITS_EMAIL_REGEX.test(email)) {
           return null;
         }
 
