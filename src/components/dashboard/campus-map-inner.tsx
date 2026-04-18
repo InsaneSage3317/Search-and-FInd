@@ -37,14 +37,10 @@ export default function CampusMapInner({ densities }: CampusMapInnerProps) {
         scrollWheelZoom={false}
         className="h-full w-full grayscale-[20%] contrast-[110%] brightness-[90%]"
       >
+        {/* Google Maps Hybrid (Satellite with Labels) */}
         <TileLayer
-          url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-          attribution="&copy; Esri &mdash; Source: Esri et al."
-        />
-        
-        <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png"
-          attribution='&copy; OpenStreetMap'
+          url="https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}"
+          attribution="&copy; Google Maps"
         />
 
         {densities.map((zone: ZoneDensity) => {
