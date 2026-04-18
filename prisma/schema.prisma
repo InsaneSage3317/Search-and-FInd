@@ -72,6 +72,7 @@ model Item {
   title            String
   description      String
   identifyingDetail String?  // Hidden detail
+  verificationQuestion String? // Custom Question  
   type             ItemType
   status           Status   @default(REPORTED)
   category         String

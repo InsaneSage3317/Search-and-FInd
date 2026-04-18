@@ -177,6 +177,7 @@ export default async function ItemDetailPage({
               status={item.status}
               isOwner={isOwner}
               buttonClass={accentClasses.button}
+              verificationQuestion={(item as any).verificationQuestion ?? null}
             />
 
             {isOwner && (item.status === "MATCHED" || item.status === "VERIFYING" || item.status === "HANDOVER") && (

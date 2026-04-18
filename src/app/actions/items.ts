@@ -35,6 +35,7 @@ export async function createItem(formData: FormData) {
   const title = formData.get("title")?.toString() ?? "";
   const description = formData.get("description")?.toString() ?? "";
   const identifyingDetail = formData.get("identifyingDetail")?.toString() ?? "";
+  const verificationQuestion = formData.get("verificationQuestion")?.toString() ?? "";
   const type = formData.get("type")?.toString();
   const category = formData.get("category")?.toString() ?? "";
   const zoneId = formData.get("zoneId")?.toString() ?? "";
@@ -54,6 +55,7 @@ export async function createItem(formData: FormData) {
         title,
         description,
         identifyingDetail: identifyingDetail || null,
+        verificationQuestion: verificationQuestion || null,
         type: type as any,
         category,
         zoneId,
@@ -189,6 +191,76 @@ export async function claimItem(itemId: string) {
   } catch (e) {
     console.error("Error claiming item:", e);
     return { error: "Failed to claim item. Please try again." };
+  }
+}
+
+/**
+ * Verify identifying detail and claim an item.
+ * Used to prevent fraudulent claims by verifying the secret.
+ */
+export async function verifyAndClaimItem(itemId: string, answer: string) {
+  const user = await ensureUser();
+  if (!user) {
+    return { error: "You must be signed in to claim an item." };
+  }
+
+  if (!itemId || !answer.trim()) {
+    return { error: "An identifying detail is required to claim this item." };
+  }
+
+  try {
+    const item = await prisma.item.findUnique({ where: { id: itemId } });
+    if (!item) {
+      return { error: "Item not found." };
+    }
+
+    if (item.status === "RESOLVED" || item.status === "HANDOVER" || item.status === "MATCHED") {
+      return { error: "This item has already been claimed or resolved." };
+    }
+
+    if (item.finderId === user.id || item.ownerId === user.id) {
+      return { error: "You cannot claim your own item." };
+    }
+
+    // VERIFICATION LOGIC
+    const secret = item.identifyingDetail?.toLowerCase().trim() || "";
+    const guess = answer.toLowerCase().trim();
+    
+    let isMatch = false;
+
+    // 1. Direct Substring Match
+    if (secret && (secret.includes(guess) || guess.includes(secret))) {
+      isMatch = true;
+    } else if (secret) {
+      // 2. Word Overlap Similarity Match
+      // Split into words of 3+ chars
+      const secretWords = secret.split(/[^a-zA-Z0-9]+/).filter(w => w.length >= 3);
+      const guessWords = guess.split(/[^a-zA-Z0-9]+/).filter(w => w.length >= 3);
+      isMatch = secretWords.some(w => guessWords.includes(w)) || guessWords.some(w => secretWords.includes(w));
+    }
+    
+    if (secret && !isMatch) {
+      return { error: "Verification failed. The answer does not match our records." };
+    }
+
+    // Passed verification! Proceed with claim
+    const updateData = item.type === "FOUND"
+      ? { ownerId: user.id, status: "MATCHED" as const }
+      : { finderId: user.id, status: "MATCHED" as const };
+
+    await prisma.item.update({
+      where: { id: itemId },
+      data: updateData,
+    });
+
+    revalidatePath("/dashboard");
+    revalidatePath("/dashboard/search");
+    revalidatePath("/dashboard/history");
+    revalidatePath(`/dashboard/item/${itemId}`);
+    return { success: true };
+  } catch (e) {
+    console.error("Error verifying and claiming item:", e);
+    return { error: "Failed to verify and claim item. Please try again." };
   }
 }
 

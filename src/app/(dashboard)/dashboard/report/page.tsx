@@ -163,9 +163,21 @@ function ReportPageContent() {
                 <Label htmlFor="description">Description *</Label>
                 <textarea id="description" name="description" required rows={4} className="flex w-full rounded-lg border border-input bg-background px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/60 outline-none resize-none" placeholder="Describe the item in detail..." />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="identifyingDetail"><Shield className="mr-1 inline h-3.5 w-3.5" />Secret Identifying Detail</Label>
-                <Input id="identifyingDetail" name="identifyingDetail" placeholder="e.g., Scratch on the left side" className="bg-background" />
+              <div className="space-y-4 p-4 rounded-xl border border-emerald-500/20 bg-emerald-500/5">
+                <div className="space-y-2">
+                  <Label htmlFor="verificationQuestion" className="text-emerald-500 font-bold flex items-center gap-2">
+                    <Shield className="h-4 w-4" /> Custom Verification Question
+                  </Label>
+                  <p className="text-xs text-muted-foreground mb-2">What question should the person claiming this item be asked? (Optional but highly recommended)</p>
+                  <Input id="verificationQuestion" name="verificationQuestion" placeholder="e.g., What is the wallpaper on the lock screen?" className="bg-background border-emerald-500/30" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="identifyingDetail" className="text-emerald-500 font-bold flex items-center gap-2">
+                    <Shield className="h-4 w-4" /> Expected Answer
+                  </Label>
+                  <p className="text-xs text-muted-foreground mb-2">The required answer to the question above. This will be verified automatically.</p>
+                  <Input id="identifyingDetail" name="identifyingDetail" placeholder="e.g., A picture of a man" className="bg-background border-emerald-500/30" />
+                </div>
               </div>
               <Button type="submit" disabled={isPending} className={`w-full h-11 ${type === "LOST" ? "bg-blue-600 hover:bg-blue-500" : "bg-emerald-600 hover:bg-emerald-500"}`}>
                 {isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Submitting...</> : `Report ${type === "LOST" ? "Lost" : "Found"} Item`}
