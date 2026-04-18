@@ -211,9 +211,13 @@ export default async function ItemDetailPage({
                     </div>
                   </div>
                   <div className="pt-2">
-                    <Button variant="outline" className="w-full text-xs h-8 border-emerald-500/20 hover:bg-emerald-500/10 text-emerald-400" asChild>
-                      <a href={`mailto:${isFinder ? item.owner?.email : item.finder?.email}`}>
-                        Send Email
+                     <Button variant="outline" className="w-full text-xs h-8 border-emerald-500/20 hover:bg-emerald-500/10 text-emerald-400 font-bold" asChild>
+                      <a 
+                        href={`https://mail.google.com/mail/?view=cm&fs=1&to=${isFinder ? item.owner?.email : item.finder?.email}&su=${encodeURIComponent(`FindIt NIT Silchar: Regarding "${item.title}"`)}&body=${encodeURIComponent(`Hello,\n\nI am contacting you regarding the item "${item.title}" reported on FindIt.\n\nType: ${item.type}\nCategory: ${item.category}\nLocation: ${item.zone.name}\n\n---`)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Send Email (Gmail)
                       </a>
                     </Button>
                   </div>

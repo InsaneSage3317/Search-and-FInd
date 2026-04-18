@@ -112,13 +112,13 @@ model Report {
   description String
   
   userId      String
-  user        User     @relation(fields: [userId], references: [id])
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   
   zoneId      String
-  zone        Zone     @relation(fields: [zoneId], references: [id])
+  zone        Zone     @relation(fields: [zoneId], references: [id], onDelete: Restrict)
   
   itemId      String?
-  item        Item?    @relation(fields: [itemId], references: [id])
+  item        Item?    @relation(fields: [itemId], references: [id], onDelete: SetNull)
   
   createdAt   DateTime @default(now())
 }

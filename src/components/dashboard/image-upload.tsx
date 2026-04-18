@@ -34,12 +34,6 @@ export function ImageUpload({ onUpload, defaultValue }: ImageUploadProps) {
       return;
     }
 
-    const client = supabase;
-    if (!client) {
-      toast.error("Storage service not configured. Please check your environment variables.");
-      return;
-    }
-
     try {
       setUploading(true);
       
@@ -49,7 +43,7 @@ export function ImageUpload({ onUpload, defaultValue }: ImageUploadProps) {
       const filePath = `items/${fileName}`;
 
       // 2. Upload to Supabase 'item-photos' bucket
-      const { error: uploadError } = await client.storage
+      const { error: uploadError } = await supabase.storage
         .from("item-photos")
         .upload(filePath, file);
 
@@ -58,7 +52,7 @@ export function ImageUpload({ onUpload, defaultValue }: ImageUploadProps) {
       }
 
       // 3. Get public URL
-      const { data: { publicUrl } } = client.storage
+      const { data: { publicUrl } } = supabase.storage
         .from("item-photos")
         .getPublicUrl(filePath);
 

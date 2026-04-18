@@ -39,8 +39,9 @@ const WEIGHTS = {
   temporal: 0.15,
 };
 
-const MATCH_THRESHOLD = 0.55;  // Minimum composite score to consider a match
-const TEMPORAL_DECAY_DAYS = 14; // Score decays to 0 over this many days
+const MATCH_THRESHOLD = 0.65;  // Increased from 0.55 for higher confidence
+const TEMPORAL_DECAY_DAYS = 14; 
+const CATEGORY_MISMATCH_PENALTY = 0.4; // 40% of original score if categories differ
 
 /**
  * Calculate text similarity between two items using multiple signals
@@ -48,9 +49,9 @@ const TEMPORAL_DECAY_DAYS = 14; // Score decays to 0 over this many days
 function getTextScore(lostItem: MatchableItem, foundItem: MatchableItem): number {
   // Signal 1: Search lost title in found item fields
   const fuse1 = new Fuse([foundItem], {
-    keys: ["title", "description"],
+    keys: ["title", "description", "category"],
     includeScore: true,
-    threshold: 0.7,
+    threshold: 0.6, // Stricter threshold (0.7 -> 0.6)
     ignoreLocation: true,
     minMatchCharLength: 2,
   });
@@ -59,9 +60,9 @@ function getTextScore(lostItem: MatchableItem, foundItem: MatchableItem): number
 
   // Signal 2: Search found title in lost item fields
   const fuse2 = new Fuse([lostItem], {
-    keys: ["title", "description"],
+    keys: ["title", "description", "category"],
     includeScore: true,
-    threshold: 0.7,
+    threshold: 0.6, // Stricter threshold
     ignoreLocation: true,
     minMatchCharLength: 2,
   });
@@ -133,9 +134,12 @@ export function findMatchesForItem(
     const lostItem = isLost ? item : candidate;
     const foundItem = isLost ? candidate : item;
 
-    // Category must match for a meaningful result
     const categoryMatch = lostItem.category === foundItem.category;
+    const isOtherCategory = lostItem.category === "Other" || foundItem.category === "Other";
     
+    // Category mismatch penalty (unless one is 'Other')
+    const categoryPenalty = (!categoryMatch && !isOtherCategory) ? CATEGORY_MISMATCH_PENALTY : 1.0;
+
     const textScore = getTextScore(lostItem, foundItem);
     const zoneScore = getZoneScore(lostItem, foundItem);
     const temporalScore = getTemporalScore(lostItem, foundItem);
@@ -143,12 +147,14 @@ export function findMatchesForItem(
     // Bonus if categories match exactly
     const categoryBonus = categoryMatch ? 0.05 : 0;
 
-    const compositeScore = Math.min(1,
+    const rawScore = (
       textScore * WEIGHTS.text +
       zoneScore * WEIGHTS.zone +
       temporalScore * WEIGHTS.temporal +
       categoryBonus
     );
+
+    const compositeScore = Math.min(1, rawScore * categoryPenalty);
 
     if (compositeScore >= MATCH_THRESHOLD) {
       results.push({
