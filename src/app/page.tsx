@@ -66,9 +66,9 @@ export default function Home() {
       <main className="flex-1">
         {/* Hero */}
         <section className="relative overflow-hidden">
-          {/* Gradient orbs */}
-          <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[600px] w-[1000px] rounded-full bg-primary/5 blur-3xl" />
-          <div className="pointer-events-none absolute top-20 right-0 h-[400px] w-[500px] rounded-full bg-primary/5 blur-3xl" />
+          {/* Neon Gradient orbs for dark mode */}
+          <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[600px] w-[1000px] rounded-full bg-primary/20 blur-[120px]" />
+          <div className="pointer-events-none absolute top-20 right-0 h-[400px] w-[500px] rounded-full bg-emerald-500/10 blur-[100px]" />
 
           <div className="relative mx-auto max-w-7xl px-6 py-32 sm:px-8 sm:py-40 lg:px-12 lg:py-48">
             <div className="mx-auto max-w-4xl text-center">
@@ -125,7 +125,7 @@ export default function Home() {
         </section>
 
         {/* Features */}
-        <section id="features" className="bg-muted/30">
+        <section id="features" className="bg-card/10 border-y border-white/5 relative z-10">
           <div className="mx-auto max-w-7xl px-6 py-32 sm:px-8 lg:px-12">
             <div className="mx-auto max-w-2xl text-center mb-20">
               <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
@@ -140,7 +140,7 @@ export default function Home() {
               {features.map((feature) => (
                 <Card
                   key={feature.title}
-                  className="group relative border-none p-10 transition-all hover:bg-card hover:shadow-xl shadow-sm"
+                  className="group relative border border-white/5 bg-card/40 backdrop-blur-md p-10 transition-all hover:bg-card/80 hover:shadow-2xl hover:shadow-primary/10 hover:border-primary/20"
                 >
                   <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-all group-hover:scale-110 group-hover:bg-primary group-hover:text-primary-foreground">
                     {feature.icon}
@@ -170,7 +170,7 @@ export default function Home() {
             <div className="mx-auto grid max-w-6xl grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-4">
               {steps.map((s, i) => (
                 <div key={s.step} className="relative text-center group">
-                  <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-3xl bg-secondary text-2xl font-black text-primary shadow-inner transition-transform group-hover:rotate-6">
+                  <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-3xl bg-primary/10 border border-primary/20 text-2xl font-black text-primary shadow-inner transition-transform group-hover:rotate-6">
                     {s.step}
                   </div>
                   <h3 className="text-xl font-bold tracking-tight">{s.title}</h3>
@@ -187,7 +187,7 @@ export default function Home() {
         </section>
 
         {/* Campus Zones */}
-        <section id="zones" className="bg-muted/30">
+        <section id="zones" className="bg-card/10 border-y border-white/5">
           <div className="mx-auto max-w-7xl px-6 py-32 sm:px-8 lg:px-12">
             <div className="mx-auto max-w-2xl text-center mb-16">
               <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
@@ -202,7 +202,7 @@ export default function Home() {
               {zones.map((zone) => (
                 <span
                   key={zone}
-                  className="rounded-2xl border border-transparent bg-card px-8 py-3 text-sm font-bold text-muted-foreground transition-all hover:bg-primary/10 hover:text-primary hover:scale-105 shadow-sm"
+                  className="rounded-2xl border border-white/5 bg-card/60 backdrop-blur-sm px-8 py-3 text-sm font-bold text-muted-foreground transition-all hover:bg-primary/20 hover:text-primary hover:border-primary/30 hover:scale-105 shadow-sm"
                 >
                   {zone}
                 </span>
@@ -214,9 +214,9 @@ export default function Home() {
         {/* CTA */}
         <section className="bg-background">
           <div className="mx-auto max-w-7xl px-6 py-32 sm:px-8 lg:px-12">
-            <div className="relative overflow-hidden rounded-[3rem] bg-sidebar p-16 text-center shadow-2xl sm:p-24 group">
-              <div className="pointer-events-none absolute -bottom-20 -right-20 h-[400px] w-[400px] rounded-full bg-primary/10 blur-3xl transition-transform group-hover:scale-110" />
-              <div className="pointer-events-none absolute -top-20 -left-20 h-[400px] w-[400px] rounded-full bg-primary/10 blur-3xl transition-transform group-hover:scale-110" />
+            <div className="relative overflow-hidden rounded-[3rem] bg-card border border-white/5 p-16 text-center shadow-2xl shadow-black/50 sm:p-24 group">
+              <div className="pointer-events-none absolute -bottom-20 -right-20 h-[500px] w-[500px] rounded-full bg-primary/20 blur-[100px] transition-transform group-hover:scale-110" />
+              <div className="pointer-events-none absolute -top-20 -left-20 h-[500px] w-[500px] rounded-full bg-teal-500/10 blur-[100px] transition-transform group-hover:scale-110" />
               
               <h2 className="relative text-4xl font-extrabold tracking-tight text-white sm:text-6xl mb-6">
                 Ready to Find Yours?
