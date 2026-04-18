@@ -35,8 +35,9 @@ export default function SignInPage() {
 
     if (result?.error) {
       setError("Invalid credentials or unauthorized email domain.");
-    } else if (result?.url) {
-      window.location.href = result.url;
+    } else if (result?.ok) {
+      // Use relative path to avoid Vercel NEXTAUTH_URL absolute URL generation issues
+      window.location.href = "/dashboard";
     } else {
       setError("An unexpected error occurred. Please try again.");
     }
