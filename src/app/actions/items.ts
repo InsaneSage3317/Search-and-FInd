@@ -38,6 +38,7 @@ export async function createItem(formData: FormData) {
   const type = formData.get("type") as "LOST" | "FOUND";
   const category = formData.get("category") as string;
   const zoneId = formData.get("zoneId") as string;
+  const imageUrl = formData.get("imageUrl") as string;
 
   if (!title || !description || !type || !category || !zoneId) {
     return { error: "Please fill in all required fields." };
@@ -56,6 +57,7 @@ export async function createItem(formData: FormData) {
         type,
         category,
         zoneId,
+        imageUrl: imageUrl || null,
         ...(type === "FOUND"
           ? { finderId: user.id }
           : { ownerId: user.id }),
@@ -160,7 +162,7 @@ export async function claimItem(itemId: string) {
       return { error: "Item not found." };
     }
 
-    if (item.status === "RESOLVED" || item.status === "HANDOVER") {
+    if (item.status === "RESOLVED" || item.status === "HANDOVER" || item.status === "MATCHED") {
       return { error: "This item has already been claimed or resolved." };
     }
 
@@ -314,7 +316,7 @@ export async function unclaimItem(itemId: string) {
       return { error: "Only the claimant can retract this claim" };
     }
 
-    const updateData = item.type === "FOUND" 
+    const updateData = item.type === "FOUND"
       ? { ownerId: null, status: "REPORTED" as const }
       : { finderId: null, status: "REPORTED" as const };
 

@@ -37,6 +37,8 @@ export default function SignInPage() {
       setError("Invalid credentials or unauthorized email domain.");
     } else if (result?.url) {
       window.location.href = result.url;
+    } else {
+      setError("An unexpected error occurred. Please try again.");
     }
 
     setLoading(false);

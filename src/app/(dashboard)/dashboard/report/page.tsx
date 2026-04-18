@@ -12,13 +12,13 @@ import { getZones } from "@/app/actions/zones";
 import { toast } from "sonner";
 import { 
   MapPin, Tag, FileText, Shield, ArrowLeft, Loader2, 
-  PackageSearch, PackagePlus 
+  PackageSearch, PackagePlus, Sparkles
 } from "lucide-react";
 import Link from "next/link";
+import { ImageUpload } from "@/components/dashboard/image-upload";
+import { Suspense } from "react";
 
 type Zone = { id: string; name: string };
-
-import { Suspense } from "react";
 
 export default function ReportPage() {
   return (
@@ -39,6 +39,7 @@ function ReportPageContent() {
 
   const [type, setType] = useState<"LOST" | "FOUND">(initialType as "LOST" | "FOUND");
   const [zones, setZones] = useState<Zone[]>([]);
+  const [imageUrl, setImageUrl] = useState("");
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
@@ -49,6 +50,7 @@ function ReportPageContent() {
 
   async function handleSubmit(formData: FormData) {
     formData.set("type", type);
+    formData.set("imageUrl", imageUrl);
     startTransition(async () => {
       const result = await createItem(formData);
       if (result.error) {
@@ -63,7 +65,7 @@ function ReportPageContent() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon-sm" asChild>
+        <Button variant="ghost" size="icon" asChild>
           <Link href="/dashboard"><ArrowLeft className="h-4 w-4" /></Link>
         </Button>
         <div>
@@ -74,7 +76,6 @@ function ReportPageContent() {
         </div>
       </div>
 
-      {/* Type Toggle */}
       <div className="grid grid-cols-2 gap-3">
         <button
           type="button"
@@ -112,115 +113,67 @@ function ReportPageContent() {
         </button>
       </div>
 
-      {/* Form */}
-      <Card className="border-border/40 bg-card/50 backdrop-blur-sm">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <FileText className="h-5 w-5 text-muted-foreground" />
-            Item Details
-          </CardTitle>
-          <CardDescription>Provide as much detail as possible for better matching.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form action={handleSubmit} className="space-y-5">
-            {/* Title */}
-            <div className="space-y-2">
-              <Label htmlFor="title">Item Title *</Label>
-              <Input
-                id="title"
-                name="title"
-                placeholder="e.g., Black Samsung Earbuds, Blue Water Bottle"
-                required
-                className="bg-background"
-              />
-            </div>
+      <div className="grid gap-6 lg:grid-cols-5">
+        <div className="lg:col-span-2 order-2 lg:order-1">
+          <Card className="border-border/40 bg-card/50 backdrop-blur-sm h-full">
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Sparkles className="h-5 w-5 text-emerald-400" />
+                Item Photo
+              </CardTitle>
+              <CardDescription>
+                A clear photo helps the most in identifying the item.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ImageUpload onUpload={setImageUrl} />
+            </CardContent>
+          </Card>
+        </div>
 
-            {/* Category */}
-            <div className="space-y-2">
-              <Label htmlFor="category">
-                <Tag className="mr-1 inline h-3.5 w-3.5" />
-                Category *
-              </Label>
-              <select
-                id="category"
-                name="category"
-                required
-                className="flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground ring-offset-background focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/60"
-              >
-                <option value="">Select a category...</option>
-                {CATEGORIES.map((cat) => (
-                  <option key={cat} value={cat}>{cat}</option>
-                ))}
-              </select>
-            </div>
-
-            {/* Zone */}
-            <div className="space-y-2">
-              <Label htmlFor="zoneId">
-                <MapPin className="mr-1 inline h-3.5 w-3.5" />
-                Campus Zone *
-              </Label>
-              <select
-                id="zoneId"
-                name="zoneId"
-                required
-                className="flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground ring-offset-background focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/60"
-              >
-                <option value="">Where was it {type === "LOST" ? "last seen" : "found"}?</option>
-                {zones.map((zone) => (
-                  <option key={zone.id} value={zone.id}>{zone.name}</option>
-                ))}
-              </select>
-            </div>
-
-            {/* Description */}
-            <div className="space-y-2">
-              <Label htmlFor="description">Description *</Label>
-              <textarea
-                id="description"
-                name="description"
-                placeholder={`Describe the item in detail — color, brand, size, any distinctive marks...`}
-                required
-                rows={4}
-                className="flex w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground ring-offset-background focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/60 resize-none"
-              />
-            </div>
-
-            {/* Identifying Detail (Secret) */}
-            <div className="space-y-2">
-              <Label htmlFor="identifyingDetail">
-                <Shield className="mr-1 inline h-3.5 w-3.5" />
-                Secret Identifying Detail
-              </Label>
-              <Input
-                id="identifyingDetail"
-                name="identifyingDetail"
-                placeholder="e.g., Scratch on the left side, sticker on back"
-                className="bg-background"
-              />
-              <p className="text-xs text-muted-foreground">
-                This hidden detail helps verify ownership. Only you and admins can see this.
-              </p>
-            </div>
-
-            <Button
-              type="submit"
-              disabled={isPending}
-              className={`w-full h-11 shadow-lg transition-all ${
-                type === "LOST"
-                  ? "bg-blue-600 hover:bg-blue-500 shadow-blue-500/20"
-                  : "bg-emerald-600 hover:bg-emerald-500 shadow-emerald-500/20"
-              } text-white`}
-            >
-              {isPending ? (
-                <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Submitting...</>
-              ) : (
-                `Report ${type === "LOST" ? "Lost" : "Found"} Item`
-              )}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+        <Card className="lg:col-span-3 border-border/40 bg-card/50 backdrop-blur-sm order-1 lg:order-2">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <FileText className="h-5 w-5 text-muted-foreground" />
+              Item Details
+            </CardTitle>
+            <CardDescription>Provide as much detail as possible for better matching.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form action={handleSubmit} className="space-y-5">
+              <div className="space-y-2">
+                <Label htmlFor="title">Item Title *</Label>
+                <Input id="title" name="title" placeholder="e.g., Black Samsung Earbuds" required className="bg-background" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="category"><Tag className="mr-1 inline h-3.5 w-3.5" />Category *</Label>
+                <select id="category" name="category" required className="flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/60 outline-none">
+                  <option value="">Select a category...</option>
+                  {CATEGORIES.map((cat) => (<option key={cat} value={cat}>{cat}</option>))}
+                </select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="zoneId"><MapPin className="mr-1 inline h-3.5 w-3.5" />Campus Zone *</Label>
+                <select id="zoneId" name="zoneId" required className="flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/60 outline-none">
+                  <option value="">Where was it {type === "LOST" ? "last seen" : "found"}?</option>
+                  {zones.map((zone) => (<option key={zone.id} value={zone.id}>{zone.name}</option>))}
+                </select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="description">Description *</Label>
+                <textarea id="description" name="description" required rows={4} className="flex w-full rounded-lg border border-input bg-background px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/60 outline-none resize-none" placeholder="Describe the item in detail..." />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="identifyingDetail"><Shield className="mr-1 inline h-3.5 w-3.5" />Secret Identifying Detail</Label>
+                <Input id="identifyingDetail" name="identifyingDetail" placeholder="e.g., Scratch on the left side" className="bg-background" />
+              </div>
+              <Button type="submit" disabled={isPending} className={`w-full h-11 ${type === "LOST" ? "bg-blue-600 hover:bg-blue-500" : "bg-emerald-600 hover:bg-emerald-500"}`}>
+                {isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Submitting...</> : `Report ${type === "LOST" ? "Lost" : "Found"} Item`}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

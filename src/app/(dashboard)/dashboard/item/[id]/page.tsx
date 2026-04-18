@@ -11,6 +11,7 @@ import {
   ArrowLeft, MapPin, Clock, Tag, Shield, Zap, Sparkles,
   PackageSearch, PackagePlus, User
 } from "lucide-react";
+import Image from "next/image";
 
 export default async function ItemDetailPage({
   params,
@@ -72,6 +73,26 @@ export default async function ItemDetailPage({
                 isFinder={isFinder}
                 isClaimant={isClaimant}
               />
+            )}
+
+            {item.imageUrl && (
+              <Card className="border-border/40 bg-card/50 backdrop-blur-sm overflow-hidden group">
+                <CardContent className="p-0 relative aspect-video">
+                  <Image 
+                    src={item.imageUrl} 
+                    alt={item.title} 
+                    fill 
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 to-transparent" />
+                  <div className="absolute bottom-4 left-4">
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-950/60 px-3 py-1 text-[10px] font-bold text-white uppercase tracking-widest backdrop-blur-md border border-white/10">
+                      <Sparkles className="h-3 w-3 text-emerald-400" />
+                      Visual Reference
+                    </span>
+                  </div>
+                </CardContent>
+              </Card>
             )}
 
             <Card className="border-border/40 bg-card/50 backdrop-blur-sm">
@@ -156,6 +177,48 @@ export default async function ItemDetailPage({
               isOwner={isOwner}
               buttonClass={accentClasses.button}
             />
+
+            {isOwner && (item.status === "MATCHED" || item.status === "VERIFYING" || item.status === "HANDOVER") && (
+              <Card className="border-emerald-500/20 bg-emerald-500/5 overflow-hidden">
+                <CardHeader className="pb-3 border-b border-emerald-500/10">
+                  <CardTitle className="flex items-center gap-2 text-sm text-emerald-400">
+                    <Zap className="h-4 w-4" />
+                    Handover Contact
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-4 space-y-3">
+                  <div className="flex items-start gap-3">
+                    <div className="mt-0.5 rounded-full bg-emerald-500/20 p-1.5 text-emerald-400">
+                      <User className="h-4 w-4" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">Counterpart</p>
+                      <p className="text-sm font-semibold truncate">
+                        {isFinder ? (item.owner?.name || "The Owner") : (item.finder?.name || "The Finder")}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="mt-0.5 rounded-full bg-emerald-500/20 p-1.5 text-emerald-400">
+                      <Zap className="h-4 w-4" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">Institute Email</p>
+                      <p className="text-sm font-black text-emerald-400 selection:bg-emerald-500 selection:text-white">
+                        {isFinder ? item.owner?.email : item.finder?.email}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="pt-2">
+                    <Button variant="outline" className="w-full text-xs h-8 border-emerald-500/20 hover:bg-emerald-500/10 text-emerald-400" asChild>
+                      <a href={`mailto:${isFinder ? item.owner?.email : item.finder?.email}`}>
+                        Send Email
+                      </a>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </div>
         </div>
 

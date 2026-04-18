@@ -35,7 +35,7 @@ export default function MapPage() {
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <div className="h-3 w-3 rounded-sm bg-rose-500/40" />
-              <span className="text-xs font-medium">Active Hotspot (5+ reports)</span>
+              <span className="text-xs font-medium">Active Hotspot (6+ reports)</span>
             </div>
             <p className="text-[10px] text-muted-foreground">High traffic areas. Be vigilant or check here first!</p>
           </div>
