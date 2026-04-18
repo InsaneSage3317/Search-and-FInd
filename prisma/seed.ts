@@ -16,7 +16,6 @@ const prisma = new PrismaClient({ adapter })
 async function main() {
   const zones = [
     'Main Library',
-    'Central Canteen',
     'Hostel 1',
     'Hostel 2',
     'Hostel 3',
@@ -32,8 +31,7 @@ async function main() {
     'ME Department',
     'Civil Department',
     'Gym & Sports Complex',
-    'Auditorium',
-    'Main Gate'
+    'SAC'
   ]
 
   console.log('Seeding zones...')
