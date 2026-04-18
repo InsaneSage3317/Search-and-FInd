@@ -38,6 +38,7 @@ export function CampusMap() {
   const [densities, setDensities] = useState<ZoneDensity[]>([]);
   const [loading, setLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -47,6 +48,7 @@ export function CampusMap() {
         setDensities(data);
       } catch (e) {
         console.error("Failed to fetch zone density", e);
+        setError("Failed to load map data");
       } finally {
         setLoading(false);
       }
@@ -58,6 +60,17 @@ export function CampusMap() {
     return (
       <Card className="border-border/40 bg-card/30 backdrop-blur-sm overflow-hidden min-h-[500px] flex items-center justify-center">
         <LoaderPulse />
+      </Card>
+    );
+  }
+  
+  if (error) {
+    return (
+      <Card className="border-destructive/20 bg-destructive/5 backdrop-blur-sm overflow-hidden min-h-[500px] flex items-center justify-center">
+        <div className="text-center p-6">
+          <p className="text-sm font-semibold text-destructive mb-1">{error}</p>
+          <p className="text-xs text-muted-foreground">The campus hotspots could not be loaded at this time.</p>
+        </div>
       </Card>
     );
   }

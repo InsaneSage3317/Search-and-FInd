@@ -2,9 +2,7 @@
 
 import { MapContainer, TileLayer, Circle, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-
-// Escape hatch for missing/conflicting Leaflet types in current environment
-type LatLngExpression = any;
+import { LatLngExpression } from "leaflet";
 
 type ZoneDensity = {
   id: string;
@@ -28,31 +26,25 @@ interface CampusMapInnerProps {
   densities: ZoneDensity[];
 }
 
-// Bypassing React 19 / Leaflet 4 type mismatch for props
-const Map = MapContainer as any;
-const Layer = TileLayer as any;
-const ZoneCircle = Circle as any;
-const MapPopup = Popup as any;
-
 export default function CampusMapInner({ densities }: CampusMapInnerProps) {
   const center: LatLngExpression = [24.7591, 92.7925];
 
   return (
     <div className="h-[500px] w-full">
-      <Map 
+      <MapContainer 
         center={center} 
         zoom={16} 
         scrollWheelZoom={false}
         className="h-full w-full grayscale-[20%] contrast-[110%] brightness-[90%]"
       >
-        <Layer
+        <TileLayer
           url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
           attribution="&copy; Esri &mdash; Source: Esri et al."
         />
         
-        <Layer
-            url="https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png"
-            attribution='&copy; OpenStreetMap'
+        <TileLayer
+          url="https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png"
+          attribution='&copy; OpenStreetMap'
         />
 
         {densities.map((zone: ZoneDensity) => {
@@ -61,7 +53,7 @@ export default function CampusMapInner({ densities }: CampusMapInnerProps) {
           const color = zone.count === 0 ? "#10b98120" : zone.count < 3 ? "#10b981" : zone.count < 6 ? "#f59e0b" : "#ef4444";
           
           return (
-            <ZoneCircle
+            <Circle
               key={zone.id}
               center={coords}
               radius={radius}
@@ -73,18 +65,18 @@ export default function CampusMapInner({ densities }: CampusMapInnerProps) {
                 dashArray: '5, 10'
               }}
             >
-              <MapPopup className="custom-popup">
+              <Popup className="custom-popup">
                 <div className="p-1">
                   <h3 className="font-bold text-sm text-slate-900">{zone.name}</h3>
                   <p className="text-xs mt-1 text-slate-600">
                     <span className="font-bold text-emerald-600">{zone.count}</span> active reports
                   </p>
                 </div>
-              </MapPopup>
-            </ZoneCircle>
+              </Popup>
+            </Circle>
           );
         })}
-      </Map>
+      </MapContainer>
     </div>
   );
 }

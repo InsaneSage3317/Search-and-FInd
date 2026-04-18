@@ -32,13 +32,13 @@ export async function createItem(formData: FormData) {
     return { error: "You must be signed in to report an item." };
   }
 
-  const title = formData.get("title") as string;
-  const description = formData.get("description") as string;
-  const identifyingDetail = formData.get("identifyingDetail") as string;
-  const type = formData.get("type") as "LOST" | "FOUND";
-  const category = formData.get("category") as string;
-  const zoneId = formData.get("zoneId") as string;
-  const imageUrl = formData.get("imageUrl") as string;
+  const title = formData.get("title")?.toString() ?? "";
+  const description = formData.get("description")?.toString() ?? "";
+  const identifyingDetail = formData.get("identifyingDetail")?.toString() ?? "";
+  const type = formData.get("type")?.toString();
+  const category = formData.get("category")?.toString() ?? "";
+  const zoneId = formData.get("zoneId")?.toString() ?? "";
+  const imageUrl = formData.get("imageUrl")?.toString() ?? "";
 
   if (!title || !description || !type || !category || !zoneId) {
     return { error: "Please fill in all required fields." };
@@ -54,7 +54,7 @@ export async function createItem(formData: FormData) {
         title,
         description,
         identifyingDetail: identifyingDetail || null,
-        type,
+        type: type as any,
         category,
         zoneId,
         imageUrl: imageUrl || null,

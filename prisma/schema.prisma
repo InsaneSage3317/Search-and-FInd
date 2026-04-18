@@ -3,9 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "postgresql"
 }
 
 model User {
@@ -59,7 +57,7 @@ model VerificationToken {
   token      String   @unique
   expires    DateTime
 
-  @@unique([identifier, token])
+  @@id([identifier, token])
 }
 
 model Zone {
@@ -80,13 +78,13 @@ model Item {
   imageUrl         String?
   
   zoneId           String
-  zone             Zone     @relation(fields: [zoneId], references: [id])
+  zone             Zone     @relation(fields: [zoneId], references: [id], onDelete: Restrict)
   
   finderId         String?
-  finder           User?    @relation("Finder", fields: [finderId], references: [id])
+  finder           User?    @relation("Finder", fields: [finderId], references: [id], onDelete: SetNull)
   
   ownerId          String?
-  owner            User?    @relation("Owner", fields: [ownerId], references: [id])
+  owner            User?    @relation("Owner", fields: [ownerId], references: [id], onDelete: SetNull)
   
   reports          Report[]
   

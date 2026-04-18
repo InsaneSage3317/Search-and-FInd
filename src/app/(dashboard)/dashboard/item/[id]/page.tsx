@@ -20,9 +20,10 @@ export default async function ItemDetailPage({
 }) {
   const { id } = await params;
   
+  const [item, session] = await Promise.all([getItemById(id), auth()]);
+  if (!item) notFound();
+
   try {
-    const [item, session] = await Promise.all([getItemById(id), auth()]);
-    if (!item) notFound();
     const matches = await getMatchesForItem(id);
 
     // Determine if the current user owns this report

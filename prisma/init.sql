@@ -52,10 +52,10 @@ CREATE UNIQUE INDEX "Session_sessionToken_key" ON "Session"("sessionToken");
 CREATE TABLE "VerificationToken" (
     "identifier" TEXT NOT NULL,
     "token" TEXT NOT NULL,
-    "expires" TIMESTAMP(3) NOT NULL
+    "expires" TIMESTAMP(3) NOT NULL,
+    CONSTRAINT "VerificationToken_pkey" PRIMARY KEY ("identifier", "token")
 );
 CREATE UNIQUE INDEX "VerificationToken_token_key" ON "VerificationToken"("token");
-CREATE UNIQUE INDEX "VerificationToken_identifier_token_key" ON "VerificationToken"("identifier", "token");
 
 -- Zone table
 CREATE TABLE "Zone" (
@@ -82,9 +82,9 @@ CREATE TABLE "Item" (
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "resolvedAt" TIMESTAMP(3),
     CONSTRAINT "Item_pkey" PRIMARY KEY ("id"),
-    CONSTRAINT "Item_zoneId_fkey" FOREIGN KEY ("zoneId") REFERENCES "Zone"("id"),
-    CONSTRAINT "Item_finderId_fkey" FOREIGN KEY ("finderId") REFERENCES "User"("id"),
-    CONSTRAINT "Item_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "User"("id")
+    CONSTRAINT "Item_zoneId_fkey" FOREIGN KEY ("zoneId") REFERENCES "Zone"("id") ON DELETE RESTRICT,
+    CONSTRAINT "Item_finderId_fkey" FOREIGN KEY ("finderId") REFERENCES "User"("id") ON DELETE SET NULL,
+    CONSTRAINT "Item_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "User"("id") ON DELETE SET NULL
 );
 
 -- Report table

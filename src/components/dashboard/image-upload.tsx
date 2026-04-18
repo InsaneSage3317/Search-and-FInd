@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ImagePlus, X, Loader2, CheckCircle2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import Image from "next/image";
+import { toast } from "sonner";
 
 interface ImageUploadProps {
   onUpload: (url: string) => void;
@@ -20,16 +21,35 @@ export function ImageUpload({ onUpload, defaultValue }: ImageUploadProps) {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Validate file size (5MB max)
+    const MAX_SIZE = 5 * 1024 * 1024;
+    if (file.size > MAX_SIZE) {
+      toast.error("File size must be less than 5MB");
+      return;
+    }
+
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please upload an image file");
+      return;
+    }
+
+    const client = supabase;
+    if (!client) {
+      toast.error("Storage service not configured. Please check your environment variables.");
+      return;
+    }
+
     try {
       setUploading(true);
       
       // 1. Create a unique file name
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
+      const fileExt = file.name.split(".").pop() || "jpg";
+      const fileName = `${crypto.randomUUID()}.${fileExt}`;
       const filePath = `items/${fileName}`;
 
       // 2. Upload to Supabase 'item-photos' bucket
-      const { error: uploadError, data } = await supabase.storage
+      const { error: uploadError } = await client.storage
         .from("item-photos")
         .upload(filePath, file);
 
@@ -38,7 +58,7 @@ export function ImageUpload({ onUpload, defaultValue }: ImageUploadProps) {
       }
 
       // 3. Get public URL
-      const { data: { publicUrl } } = supabase.storage
+      const { data: { publicUrl } } = client.storage
         .from("item-photos")
         .getPublicUrl(filePath);
 
@@ -46,7 +66,7 @@ export function ImageUpload({ onUpload, defaultValue }: ImageUploadProps) {
       onUpload(publicUrl);
     } catch (error) {
       console.error("Error uploading image:", error);
-      alert("Error uploading image. Make sure the 'item-photos' bucket exists and is public.");
+      toast.error("Error uploading image. Please try again.");
     } finally {
       setUploading(false);
     }
