@@ -8,7 +8,7 @@
 
 FindIt transitions the campus lost-and-found from manual notice boards to a digital-first ecosystem:
 
-1.  **Reporting**: Users log in via their authorized Institute Email (Demo password: demo123) and report either a **LOST** or **FOUND** item, tagging it with a specific campus zone (e.g., Library, Gymkhana, Hostel 9).
+1.  **Reporting**: Users authenticate via a secure, passwordless **Magic Link** sent exclusively to their authorized Institute Email (`@*.nits.ac.in`). Once verified, they can report either a **LOST** or **FOUND** item, tagging it with a specific campus zone (e.g., Library, Gymkhana, Hostel 9).
 2.  **Smart Matching**: The system instantly runs a fuzzy matching algorithm to compare descriptions. If a possible match is found, both parties are notified on their dashboard.
 3.  **The Handover**: Users can securely claim items. The reporter of a "Found" item can then verify the claimant and mark the item as **Resolved** once the physical handover is complete.
 4.  **Campus Insights**: Students can view a live **Campus Heatmap** to see hotspots where items are frequently lost or found, helping them be more cautious in specific areas.
