@@ -4,12 +4,10 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Eye, EyeOff } from "lucide-react";
 
 export default function SignInPage() {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+  const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -28,20 +26,16 @@ export default function SignInPage() {
       return;
     }
 
-    const result = await signIn("credentials", {
+    const result = await signIn("nodemailer", {
       email,
-      password,
       redirect: false,
       callbackUrl: "/dashboard",
     });
 
     if (result?.error) {
-      setError("Invalid credentials or unauthorized email domain.");
-    } else if (result?.ok) {
-      // Use relative path to avoid Vercel NEXTAUTH_URL absolute URL generation issues
-      window.location.href = "/dashboard";
+      setError("Failed to send login link. Please ensure your email is correct.");
     } else {
-      setError("An unexpected error occurred. Please try again.");
+      setSuccess(true);
     }
 
     setLoading(false);
@@ -70,64 +64,57 @@ export default function SignInPage() {
             Sign in with your NIT Silchar email
           </p>
 
-          <form onSubmit={handleSubmit} className="mt-8 space-y-5">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-foreground">
-                Institute Email
-              </label>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="name_ug_25@ece.nits.ac.in"
-                required
-                className="mt-1.5 flex h-11 w-full rounded-lg border border-input bg-background px-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/60 transition-all"
-              />
+          {success ? (
+            <div className="mt-8 text-center space-y-4">
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/20">
+                <svg className="h-6 w-6 text-emerald-500" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+                </svg>
+              </div>
+              <h2 className="text-xl font-bold text-foreground">Check your inbox!</h2>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                We've sent a secure, magic login link to <strong>{email}</strong>. Click the link inside to instantly sign in!
+              </p>
+              <Button
+                variant="outline"
+                onClick={() => setSuccess(false)}
+                className="mt-4 w-full h-11 border-border/50 text-muted-foreground"
+              >
+                Try a different email
+              </Button>
             </div>
-
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-foreground">
-                Password
-              </label>
-              <div className="relative mt-1.5">
+          ) : (
+            <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-foreground">
+                  Institute Email
+                </label>
                 <input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="name_ug_25@ece.nits.ac.in"
                   required
-                  className="flex h-11 w-full rounded-lg border border-input bg-background px-4 pr-10 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/60 transition-all"
+                  className="mt-1.5 flex h-11 w-full rounded-lg border border-input bg-background px-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/60 transition-all"
                 />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground focus:outline-none transition-colors"
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
-                </button>
               </div>
-            </div>
 
-            {error && (
-              <div className="rounded-lg bg-destructive/10 p-3 text-sm text-destructive">
-                {error}
-              </div>
-            )}
+              {error && (
+                <div className="rounded-lg bg-destructive/10 p-3 text-sm text-destructive">
+                  {error}
+                </div>
+              )}
 
-            <Button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 transition-all h-11"
-            >
-              {loading ? "Signing in..." : "Sign In"}
-            </Button>
-          </form>
+              <Button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 transition-all h-11"
+              >
+                {loading ? "Sending Magic Link..." : "Send Magic Link"}
+              </Button>
+            </form>
+          )}
 
           <p className="mt-6 text-center text-xs text-muted-foreground">
             Only <span className="font-medium text-foreground">@*.nits.ac.in</span> emails are accepted.
